@@ -1,0 +1,3 @@
+- we should not be forced to copy include/strus/errorUtils.hph here for the
+  CATCH_ERROR_* macros!
+- same problem applies to internationalization.hpp

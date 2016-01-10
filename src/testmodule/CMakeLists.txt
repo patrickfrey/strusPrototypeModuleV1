@@ -8,10 +8,11 @@ include_directories(
 	"${strus_INCLUDE_DIRS}"
 	"${strusanalyzer_INCLUDE_DIRS}"
 	"${strusmodule_INCLUDE_DIRS}"
+	"${PROJECT_SOURCE_DIR}/include"
 )
 
 link_directories( 
-        "${Boost_LIBRARY_DIRS}"
+	"${Boost_LIBRARY_DIRS}"
 	"${strus_LIBRARY_DIRS}"
 	"${strusanalyzer_LIBRARY_DIRS}"
 	"${strusmodule_LIBRARY_DIRS}" )

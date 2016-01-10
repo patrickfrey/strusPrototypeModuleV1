@@ -9,8 +9,14 @@ static const strus::PostingIteratorJoinConstructor operators[] =
 	{ 0, 0 }
 };
 
+strus::WeightingFunctionInterface *createWeightingFunction_test( strus::ErrorBufferInterface *errorhnd )
+{
+	return new test::WeightingFunctionTest( errorhnd );
+}
+
 static const strus::WeightingFunctionConstructor weightingFunctions[] =
 {
+	{ "test", createWeightingFunction_test },
 	{ 0, 0 }
 };
 
