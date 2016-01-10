@@ -13,10 +13,21 @@ void WeightingFunctionContextTest::addWeightingFeature( const std::string& name,
 	float weight,
 	const strus::TermStatistics& stats )
 {
+	try {
+		if( boost::algorithm::iequals( name, "match" ) ) {
+			// TODO: do something with the feature
+		} else {
+			throw strus::runtime_error( _TXT( "unknown '%s' weighting function feature parameter '%s'" ), "test", name.c_str( ) );
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT( "error adding weighting feature to '%s' weighting: %s"), "test", *m_errorhnd );
 }
 
 float WeightingFunctionContextTest::call( const strus::Index &docno )
 {
+	// TODO: the weight is always a constant no mather whether the document
+	// actually contains the feature or not
+	return m_param;
 }
 
 std::string WeightingFunctionInstanceTest::tostring() const
@@ -31,7 +42,13 @@ std::string WeightingFunctionInstanceTest::tostring() const
 
 void WeightingFunctionInstanceTest::addStringParameter( const std::string& name, const std::string& value )
 {
-	// we have no string parameters
+	try {
+		if( boost::algorithm::iequals( name, "match" ) ) {
+			m_errorhnd->report( _TXT( "parameter '%s' for weighting scheme '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
+		}
+		// we have no string parameters
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' weighting: %s"), "test", *m_errorhnd );
 }
 
 void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::ArithmeticVariant& value )
@@ -66,7 +83,8 @@ strus::WeightingFunctionInterface::Description WeightingFunctionTest::getDescrip
 {
 	try {
 		strus::WeightingFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a weighting schema \"test\"" ) );
-		descr( strus::WeightingFunctionInterface::Description::Param::Feature, "param", _TXT( "a dummy parameter" ) );
+		descr( strus::WeightingFunctionInterface::Description::Param::Numeric, "param", _TXT( "a dummy parameter" ) );
+		descr( strus::WeightingFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to weight"));
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating weighting function description for '%s': %s" ), "test", *m_errorhnd,
