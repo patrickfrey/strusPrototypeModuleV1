@@ -9,6 +9,7 @@ include_directories(
 	"${strusanalyzer_INCLUDE_DIRS}"
 	"${strusmodule_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_SOURCE_DIR}/include/strus/private"
 )
 
 link_directories( 
@@ -20,10 +21,9 @@ link_directories(
 # ------------------------------------
 # LIBRARY
 # ------------------------------------
-add_library( modtest MODULE modtest.cpp operatortest.cpp weightingtest.cpp summarizertest.cpp )
+add_library( modtest MODULE modtest.cpp internationalization.cpp operatortest.cpp weightingtest.cpp summarizertest.cpp )
 set_target_properties( modtest PROPERTIES PREFIX "")
 target_link_libraries( modtest strus_module )
-
 
 # ------------------------------
 # INSTALLATION
