@@ -20,8 +20,14 @@ static const strus::WeightingFunctionConstructor weightingFunctions[] =
 	{ 0, 0 }
 };
 
+strus::SummarizerFunctionInterface *createSummarizerFunction_test( strus::ErrorBufferInterface *errorhnd )
+{
+	return new test::SummarizerFunctionTest( errorhnd );
+}
+
 static const strus::SummarizerFunctionConstructor summarizers[] =
 {
+	{ "test", createSummarizerFunction_test },
 	{ 0, 0 }
 };
 

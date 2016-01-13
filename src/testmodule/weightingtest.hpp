@@ -28,10 +28,10 @@ class WeightingFunctionContextTest : public strus::WeightingFunctionContextInter
 			
 		virtual ~WeightingFunctionContextTest( ) { }
 
-		virtual void addWeightingFeature( const std::string& name,
-			strus::PostingIteratorInterface* itr,
+		virtual void addWeightingFeature( const std::string &name,
+			strus::PostingIteratorInterface *itr,
 			float weight,
-			const strus::TermStatistics& stats );
+			const strus::TermStatistics &stats );
 
 		virtual float call( const strus::Index &docno );
 	

@@ -1,6 +1,7 @@
 #include "weightingtest.hpp"
 
 #include "strus/private/errorUtils.hpp"
+#include "strus/private/internationalization.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <string>
@@ -44,9 +45,10 @@ void WeightingFunctionInstanceTest::addStringParameter( const std::string& name,
 {
 	try {
 		if( boost::algorithm::iequals( name, "match" ) ) {
-			m_errorhnd->report( _TXT( "parameter '%s' for weighting scheme '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
+			m_errorhnd->report( _TXT( "parameter '%s' for weighting function '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
 		}
 		// we have no string parameters
+		m_errorhnd->report( _TXT("unknown '%s' string weighting function parameter '%s'"), "test", name.c_str( ) );
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' weighting: %s"), "test", *m_errorhnd );
 }
@@ -61,9 +63,9 @@ void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name
 }
 
 strus::WeightingFunctionContextInterface *WeightingFunctionInstanceTest::createFunctionContext( 
-	const strus::StorageClientInterface* storage_,
-	strus::MetaDataReaderInterface* metadata,
-	const strus::GlobalStatistics& stats ) const
+	const strus::StorageClientInterface *storage_,
+	strus::MetaDataReaderInterface *metadata,
+	const strus::GlobalStatistics &stats ) const
 {
 	try {
 		return new WeightingFunctionContextTest( storage_, metadata, m_param, m_errorhnd );
@@ -82,7 +84,7 @@ strus::WeightingFunctionInstanceInterface* WeightingFunctionTest::createInstance
 strus::WeightingFunctionInterface::Description WeightingFunctionTest::getDescription( ) const
 {
 	try {
-		strus::WeightingFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a weighting schema \"test\"" ) );
+		strus::WeightingFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a weighting schema 'test'" ) );
 		descr( strus::WeightingFunctionInterface::Description::Param::Numeric, "param", _TXT( "a dummy parameter" ) );
 		descr( strus::WeightingFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to weight"));
 		return descr;
