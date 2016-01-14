@@ -31,9 +31,11 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			strus::AttributeReaderInterface *attribreader, 
 			const std::string &attribute,
 			const std::string &type,
+			const unsigned int N,
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
 			m_attribute( attribreader->elementHandle( attribute.c_str( ) ) ),
+			m_N( N ),
 			m_errorhnd( errorhnd ) { 
 				m_forwardIndex = storage->createForwardIterator( type );
 				if( !m_forwardIndex ) {
@@ -43,6 +45,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 				
 		virtual ~SummarizerFunctionContextTest( ) {
 			delete m_attribreader;
+			delete m_forwardIndex;
 		}
 
 		virtual void addSummarizationFeature( const std::string &name,
@@ -57,6 +60,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 
 		strus::AttributeReaderInterface *m_attribreader;
 		int m_attribute;
+		strus::Index m_N;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
 		strus::ForwardIteratorInterface *m_forwardIndex;
@@ -69,6 +73,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::string m_attribute;
 		std::string m_type;
+		unsigned int m_N;
 
 	public:
 	

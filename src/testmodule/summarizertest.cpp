@@ -2,6 +2,7 @@
 
 #include "strus/attributeReaderInterface.hpp"
 #include "strus/storageClientInterface.hpp"
+#include "strus/arithmeticVariant.hpp"
 
 #include "strus/private/errorUtils.hpp"
 
@@ -43,7 +44,7 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 
 		m_forwardIndex->skipDoc( docno );
 		
-		for( strus::Index pos = 0; pos < 100; pos++ ) {
+		for( strus::Index pos = 0; pos < m_N; pos++ ) {
 			m_forwardIndex->skipPos( pos );
 			elems.push_back( m_forwardIndex->fetch( ) );
 		}
@@ -114,7 +115,9 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 
 void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::ArithmeticVariant& value )
 {
-	if( boost::algorithm::iequals( name, "attribute" ) ) {		
+	if( boost::algorithm::iequals( name, "N" ) ) {
+		m_N = (unsigned int)value;
+	} else if( boost::algorithm::iequals( name, "attribute" ) ) {		
 		m_errorhnd->report( _TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test" );
 	} else {
 		m_errorhnd->report( _TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test", name.c_str( ) );
@@ -132,7 +135,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_N, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
 }
@@ -151,6 +154,7 @@ strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescr
 		strus::SummarizerFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a summarizer 'test'" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::Attribute, "attribute", _TXT( "an attribute parameter" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
+		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,
