@@ -5,8 +5,10 @@
 #include "strus/summarizerFunctionInterface.hpp"
 #include "strus/summarizerFunctionInstanceInterface.hpp"
 #include "strus/queryProcessorInterface.hpp"
+#include "strus/storageClientInterface.hpp"
 #include "strus/attributeReaderInterface.hpp"
 #include "strus/postingIteratorInterface.hpp"
+#include "strus/forwardIteratorInterface.hpp"
 #include "strus/index.hpp"
 #include "strus/termStatistics.hpp"
 
@@ -24,23 +26,30 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 
 	public:
 	
-		SummarizerFunctionContextTest( strus::AttributeReaderInterface *attribreader, 
-			const std::string& attribute, strus::ErrorBufferInterface* errorhnd )
+		SummarizerFunctionContextTest(
+			const strus::StorageClientInterface *storage,
+			strus::AttributeReaderInterface *attribreader, 
+			const std::string &attribute,
+			const std::string &type,
+			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
 			m_attribute( attribreader->elementHandle( attribute.c_str( ) ) ),
-			m_errorhnd( errorhnd ) { }
+			m_errorhnd( errorhnd ) { 
+				m_forwardIndex = storage->createForwardIterator( type );
+				if( !m_forwardIndex ) {
+					throw strus::runtime_error( _TXT( "error creating forward index iterator" ) );
+				}
+			}
 				
 		virtual ~SummarizerFunctionContextTest( ) {
 			delete m_attribreader;
 		}
 
-		virtual void addSummarizationFeature( const std::string &,
-			strus::PostingIteratorInterface *,
+		virtual void addSummarizationFeature( const std::string &name,
+			strus::PostingIteratorInterface *itr,
 			const std::vector<strus::SummarizationVariable> &,
 			float /*weight*/,
-			const strus::TermStatistics &) {
-			m_errorhnd->report( _TXT( "no sumarization features expected in summarization function '%s'" ), "test" );
-		}
+			const strus::TermStatistics &);
 		
 		virtual std::vector<SummarizerFunctionContextInterface::SummaryElement> getSummary( const strus::Index &docno );
 	
@@ -49,6 +58,8 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		strus::AttributeReaderInterface *m_attribreader;
 		int m_attribute;
 		strus::ErrorBufferInterface *m_errorhnd;
+		std::vector<strus::PostingIteratorInterface*> m_itrs;
+		strus::ForwardIteratorInterface *m_forwardIndex;
 };
 
 class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceInterface
@@ -57,6 +68,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::string m_attribute;
+		std::string m_type;
 
 	public:
 	

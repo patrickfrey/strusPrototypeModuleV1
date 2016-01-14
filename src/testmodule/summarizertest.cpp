@@ -8,22 +8,80 @@
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 namespace test {
+
+void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &name,
+			strus::PostingIteratorInterface *itr,
+			const std::vector<strus::SummarizationVariable> &,
+			float /*weight*/,
+			const strus::TermStatistics &)
+{
+	try {
+		if( boost::algorithm::iequals( name, "match" ) ) {
+			m_itrs.push_back( itr );
+		} else {
+			m_errorhnd->report( _TXT( "unknown '%s' summarization feature '%s'" ), "test", name.c_str( ) );
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT( "error adding summarization feature to '%s' summarizer: %s" ), "test", *m_errorhnd );
+}
 
 std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> SummarizerFunctionContextTest::getSummary( const strus::Index &docno )
 {
 	try {
-		std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> elems;
+		std::vector<SummaryElement> elems;
+
 		m_attribreader->skipDoc( docno );
 		std::string attr = m_attribreader->getValue( m_attribute );
 		if( !attr.empty( ) ) { 
-			elems.push_back( strus::SummarizerFunctionContextInterface::SummaryElement( attr, 1.0 ) );
+			elems.push_back( SummaryElement( attr ) );
+		} else {
+			elems.push_back( SummaryElement( "..." ) );
 		}
+
+		m_forwardIndex->skipDoc( docno );
+		
+		for( strus::Index pos = 0; pos < 100; pos++ ) {
+			m_forwardIndex->skipPos( pos );
+			elems.push_back( m_forwardIndex->fetch( ) );
+		}
+
+		//~ for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
+			//~ if( (*itr)->skipDoc( docno ) == docno ) {
+				//~ strus::Index pos = (*itr)->skipPos( 0 );
+				//~ std::stringstream ss;
+				//~ ss << "(" << docno << "," << pos << ")";
+				//~ std::cout << ss.str( ) << std::endl;
+				//~ elems.push_back( SummaryElement( ss.str( ) ) );
+				//~ for( strus::Index pos = (*itr)->skipPos( 0 ); pos != 0; pos = (*itr)->skipPos( pos + 1 ) ) {
+				//~ }
+			//~ }
+		//~ }
+	
 		return elems;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error fetching '%s' summary: %s" ), "test", *m_errorhnd, std::vector<strus::SummarizerFunctionContextInterface::SummaryElement>( ) );
 }
+
+	//~ try
+	//~ {
+		//~ std::vector<PostingIteratorInterface*>::const_iterator
+			//~ ii = m_itrs.begin(), ie = m_itrs.end();
+	
+		//~ for (; ii != ie; ++ii)
+		//~ {
+			//~ if ((*ii)->skipDoc( docno) == docno)
+			//~ {
+				//~ unsigned int kk=0;
+				//~ Index pos = (*ii)->skipPos( 0);
+				//~ for (; pos && kk<m_maxNofMatches; ++kk,pos = (*ii)->skipPos( pos+1))
+				//~ {
+				//~ }
+			//~ }
+		//~ }
+		//~ return rt;
 
 std::string SummarizerFunctionInstanceTest::tostring() const
 {
@@ -45,6 +103,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 		}
 		if( boost::algorithm::iequals( name, "attribute" ) ) {
 			m_attribute = value;
+		} else if( boost::algorithm::iequals( name, "type" ) ) {
+			m_type = value;
 		} else {
 			m_errorhnd->report( _TXT( "unknown '%s' string summarization function parameter '%s'" ), "test", name.c_str( ) );
 		}
@@ -72,7 +132,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( reader, m_attribute, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
 }
