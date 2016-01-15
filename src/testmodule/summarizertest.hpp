@@ -19,6 +19,9 @@
 
 #include <vector>
 
+const unsigned int TEST_DEFAULT_N = 50;
+const std::string TEST_DEFAULT_MARK = "<b>%1%</b>";
+
 namespace test {
 
 class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInterface
@@ -32,10 +35,12 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const std::string &attribute,
 			const std::string &type,
 			const unsigned int N,
+			const std::string mark,
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
 			m_attribute( attribreader->elementHandle( attribute.c_str( ) ) ),
 			m_N( N ),
+			m_mark( mark ),
 			m_errorhnd( errorhnd ) { 
 				m_forwardIndex = storage->createForwardIterator( type );
 				if( !m_forwardIndex ) {
@@ -61,6 +66,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		strus::AttributeReaderInterface *m_attribreader;
 		int m_attribute;
 		strus::Index m_N;
+		std::string m_mark;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
 		strus::ForwardIteratorInterface *m_forwardIndex;
@@ -74,11 +80,12 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		std::string m_attribute;
 		std::string m_type;
 		unsigned int m_N;
+		std::string m_mark;
 
 	public:
 	
 		explicit SummarizerFunctionInstanceTest( strus::ErrorBufferInterface *errorhnd_ )
-			: m_errorhnd( errorhnd_ ) { }
+			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), m_mark( TEST_DEFAULT_MARK ) { }
 
 		virtual ~SummarizerFunctionInstanceTest( ) { }
 

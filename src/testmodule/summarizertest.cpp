@@ -7,9 +7,14 @@
 #include "strus/private/errorUtils.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
+
 #include <string>
 #include <sstream>
+#include <queue>
+
 #include <iostream>
+#include <iomanip>
 
 namespace test {
 
@@ -34,6 +39,7 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 	try {
 		std::vector<SummaryElement> elems;
 
+		// show a first "bonus" attribute (just for demonstating)
 		m_attribreader->skipDoc( docno );
 		std::string attr = m_attribreader->getValue( m_attribute );
 		if( !attr.empty( ) ) { 
@@ -42,54 +48,55 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			elems.push_back( SummaryElement( "..." ) );
 		}
 
-		m_forwardIndex->skipDoc( docno );
-		
-		for( strus::Index pos = 0; pos < m_N; pos++ ) {
-			m_forwardIndex->skipPos( pos );
-			elems.push_back( m_forwardIndex->fetch( ) );
+		// remember all feature positions for the top N positions
+		std::priority_queue< strus::Index, std::vector<strus::Index>, std::greater<strus::Index> > positions;
+		for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
+			if( (*itr)->skipDoc( docno ) == docno ) {
+				strus::Index idxPos = (*itr)->skipPos( 0 );
+				while( idxPos != 0 && idxPos <= m_N ) {
+					positions.push( idxPos );
+					idxPos = (*itr)->skipPos( idxPos + 1 );
+				}
+			}
 		}
 
-		//~ for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
-			//~ if( (*itr)->skipDoc( docno ) == docno ) {
-				//~ strus::Index pos = (*itr)->skipPos( 0 );
-				//~ std::stringstream ss;
-				//~ ss << "(" << docno << "," << pos << ")";
-				//~ std::cout << ss.str( ) << std::endl;
-				//~ elems.push_back( SummaryElement( ss.str( ) ) );
-				//~ for( strus::Index pos = (*itr)->skipPos( 0 ); pos != 0; pos = (*itr)->skipPos( pos + 1 ) ) {
-				//~ }
-			//~ }
-		//~ }
+		// skip in forward index to the right document
+		m_forwardIndex->skipDoc( docno );
+
+		// iterate through forward index up to position N, if we have found
+		// a feature we must "highlight", we do so.
+		strus::Index nextMarkPos = -1;
+		if( !positions.empty( ) ) {
+			nextMarkPos = positions.top( );
+			positions.pop( );
+		}
+		for( strus::Index pos = 0; pos <= m_N; pos++ ) {
+			m_forwardIndex->skipPos( pos );
+			std::string w = m_forwardIndex->fetch( );
+			if( pos == nextMarkPos ) {
+				std::stringstream ss;				
+				ss << boost::format( m_mark ) % w;
+				elems.push_back( ss.str( ) );
+				if( !positions.empty( ) ) {
+					nextMarkPos = positions.top( );
+					positions.pop( );
+				}
+			} else {
+				elems.push_back( w );
+			}
+		}
 	
 		return elems;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error fetching '%s' summary: %s" ), "test", *m_errorhnd, std::vector<strus::SummarizerFunctionContextInterface::SummaryElement>( ) );
 }
 
-	//~ try
-	//~ {
-		//~ std::vector<PostingIteratorInterface*>::const_iterator
-			//~ ii = m_itrs.begin(), ie = m_itrs.end();
-	
-		//~ for (; ii != ie; ++ii)
-		//~ {
-			//~ if ((*ii)->skipDoc( docno) == docno)
-			//~ {
-				//~ unsigned int kk=0;
-				//~ Index pos = (*ii)->skipPos( 0);
-				//~ for (; pos && kk<m_maxNofMatches; ++kk,pos = (*ii)->skipPos( pos+1))
-				//~ {
-				//~ }
-			//~ }
-		//~ }
-		//~ return rt;
-
 std::string SummarizerFunctionInstanceTest::tostring() const
 {
 	try
 	{
 		std::ostringstream rt;
-		rt << "attribute='" << m_attribute << "'";
+		rt << "attribute='" << m_attribute << "', type='" << m_type << "', N=" << m_N;
 		return rt.str();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error mapping '%s' summarizer function to string: %s" ), "test", *m_errorhnd, std::string( ) );
@@ -106,6 +113,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 			m_attribute = value;
 		} else if( boost::algorithm::iequals( name, "type" ) ) {
 			m_type = value;
+		} else if( boost::algorithm::iequals( name, "mark" ) ) {
+			m_mark = value;
 		} else {
 			m_errorhnd->report( _TXT( "unknown '%s' string summarization function parameter '%s'" ), "test", name.c_str( ) );
 		}
@@ -135,7 +144,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_N, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_N, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
 }
@@ -155,6 +164,7 @@ strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescr
 		descr( strus::SummarizerFunctionInterface::Description::Param::Attribute, "attribute", _TXT( "an attribute parameter" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
 		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
+		descr( strus::SummarizerFunctionInterface::Description::Param::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,
