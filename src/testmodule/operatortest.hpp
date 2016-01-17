@@ -33,38 +33,57 @@
 #ifndef OPERATOR_TEST_HPP_INCLUDED
 #define OPERATOR_TEST_HPP_INCLUDED
 
+#include "strus/postingJoinOperatorInterface.hpp"
 #include "strus/postingIteratorInterface.hpp"
+
+#include "strus/errorBufferInterface.hpp"
 
 namespace test {
 
-class IteratorTest : public strus::PostingIteratorInterface
+class TestPostingIterator : public strus::PostingIteratorInterface
 {
 	public:
 	
-		virtual ~IteratorTest( ) { }
+		TestPostingIterator( const std::vector<strus::Reference< strus::PostingIteratorInterface> > &args, strus::ErrorBufferInterface* errorhnd );
 	
-		explicit SummarizerFunctionTest( strus::ErrorBufferInterface *errorhnd_ )
-			: m_errorhnd( errorhnd_ ) { }
+		virtual ~TestPostingIterator( ) { }
 
-		virtual ~SummarizerFunctionTest( ) { }
+		virtual strus::Index skipDoc( const strus::Index &docno );
+		
+		virtual strus::Index skipDocCandidate( const strus::Index &docno );
+		
+		virtual strus::Index skipPos( const strus::Index &firstPos );
 
-		virtual strus::SummarizerFunctionInstanceInterface *createInstance( const strus::QueryProcessorInterface *query_processor ) const;
-
-		virtual strus::SummarizerFunctionInterface::Description getDescription( ) const;
-
-public:
-
-	virtual unsigned int frequency()
-	{
-		Index idx=0;
-		unsigned int rt = 0;
-		for (;0!=(idx=skipPos( idx))
-			&& rt < (unsigned int)std::numeric_limits<short>::max();
-				++idx,++rt){}
-		return rt;
-	}
+		virtual const char *featureid( ) const;
+ 
+		virtual strus::Index documentFrequency( ) const;
+	
+		virtual unsigned int frequency( );
+		
+		virtual strus::Index docno( ) const;
+		
+		virtual strus::Index posno( ) const;
 };
 
+class PostingJoinOperatorTest : public strus::PostingJoinOperatorInterface
+{
+	private:
+
+		strus::ErrorBufferInterface *m_errorhnd;
+
+	public:
+
+		explicit PostingJoinOperatorTest( strus::ErrorBufferInterface *errorhnd_ )
+			: m_errorhnd( errorhnd_ ) { }
+	
+		virtual ~PostingJoinOperatorTest( ) { }
+
+		virtual strus::PostingIteratorInterface *createResultIterator(
+			const std::vector<strus::Reference<strus::PostingIteratorInterface> > &itrs,
+			int range,
+			unsigned int cardinality ) const;
+
+		virtual strus::PostingJoinOperatorInterface::Description getDescription( ) const;
 
 };
 

@@ -36,8 +36,14 @@
 #include "weightingtest.hpp"
 #include "summarizertest.hpp"
 
+strus::PostingJoinOperatorInterface *createPostingIteratorTest_test( strus::ErrorBufferInterface *errorhnd )
+{
+	return new test::PostingJoinOperatorTest( errorhnd );
+}
+
 static const strus::PostingIteratorJoinConstructor operators[] =
 {
+	{ "test", createPostingIteratorTest_test },
 	{ 0, 0 }
 };
 

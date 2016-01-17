@@ -30,8 +30,82 @@
 --------------------------------------------------------------------
 */
 
-#include "weightingtest.hpp"
+#include "operatortest.hpp"
+
+#include "strus/private/errorUtils.hpp"
 
 namespace test {
+
+TestPostingIterator::TestPostingIterator( const std::vector<strus::Reference< strus::PostingIteratorInterface> > &args, strus::ErrorBufferInterface* errorhnd )
+{
+}
+
+strus::Index TestPostingIterator::skipDoc( const strus::Index &docno )
+{
+}
+		
+strus::Index TestPostingIterator::skipDocCandidate( const strus::Index &docno )
+{
+}
+		
+strus::Index TestPostingIterator::skipPos( const strus::Index &firstPos )
+{
+}
+
+const char *TestPostingIterator::featureid( ) const
+{
+}
+ 
+strus::Index TestPostingIterator::documentFrequency( ) const
+{
+}
+	
+unsigned int TestPostingIterator::frequency( )
+{
+}
+		
+strus::Index TestPostingIterator::docno( ) const
+{
+}
+		
+strus::Index TestPostingIterator::posno( ) const
+{
+}
+
+strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
+			const std::vector<strus::Reference<strus::PostingIteratorInterface> > &itrs,
+			int range,
+			unsigned int cardinality ) const
+{
+	if( range != 0 ) {
+		m_errorhnd->report( _TXT( "no range argument expected for 'test'" ) );
+		return 0;
+	}
+	
+	if( cardinality != 0 ) {
+		m_errorhnd->report( _TXT( "no cardinality argument expected for 'test'" ) );
+		return 0;
+	}
+	
+	if( itrs.size( ) == 0 ) {
+		m_errorhnd->report( _TXT( "too few arguments for 'test'" ) );
+		return 0;
+	}
+
+	try {
+		return new TestPostingIterator( itrs, m_errorhnd );
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating instance of '%s' posting join iterator: %s" ), "test", *m_errorhnd, 0 );
+}
+
+strus::PostingJoinOperatorInterface::Description PostingJoinOperatorTest::getDescription( ) const
+{
+	try {
+		strus::PostingJoinOperatorInterface::Description descr( _TXT( "Demonstrating how to implement a 'test' posting join operator" ) );
+		return descr;
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating posting join operator description for '%s': %s" ), "test", *m_errorhnd,
+		strus::PostingJoinOperatorInterface::Description( ) );
+}
 
 } // namespace test
