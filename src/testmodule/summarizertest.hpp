@@ -49,6 +49,9 @@
 #include "strus/private/errorUtils.hpp"
 #include "strus/private/internationalization.hpp"
 
+#include "strus/metaDataReaderInterface.hpp"
+#include "strus/attributeReaderInterface.hpp"
+
 #include <vector>
 
 const unsigned int TEST_DEFAULT_N = 50;
@@ -64,13 +67,17 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		SummarizerFunctionContextTest(
 			const strus::StorageClientInterface *storage,
 			strus::AttributeReaderInterface *attribreader, 
+			strus::MetaDataReaderInterface *metadatareader,
 			const std::string &attribute,
+			const std::string &metadata,
 			const std::string &type,
 			const unsigned int N,
 			const std::string mark,
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
+			m_metadatareader( metadatareader ),
 			m_attribute( attribreader->elementHandle( attribute.c_str( ) ) ),
+			m_metadata( metadatareader->elementHandle( metadata.c_str( ) ) ),
 			m_N( N ),
 			m_mark( mark ),
 			m_errorhnd( errorhnd ) { 
@@ -96,7 +103,9 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 	private:
 
 		strus::AttributeReaderInterface *m_attribreader;
+		strus::MetaDataReaderInterface *m_metadatareader;
 		int m_attribute;
+		int m_metadata;
 		strus::Index m_N;
 		std::string m_mark;
 		strus::ErrorBufferInterface *m_errorhnd;
@@ -110,6 +119,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::string m_attribute;
+		std::string m_metadata;
 		std::string m_type;
 		unsigned int m_N;
 		std::string m_mark;

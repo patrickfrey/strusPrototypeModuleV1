@@ -71,13 +71,22 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 	try {
 		std::vector<SummaryElement> elems;
 
-		// show a first "bonus" attribute (just for demonstating)
+		// show a first "bonus" attribute (just for demonstrating the concept)
 		m_attribreader->skipDoc( docno );
 		std::string attr = m_attribreader->getValue( m_attribute );
 		if( !attr.empty( ) ) { 
 			elems.push_back( SummaryElement( attr ) );
 		} else {
 			elems.push_back( SummaryElement( "..." ) );
+		}
+		
+		// we also add a metadata feature (just for demonstrating the concept)
+		m_metadatareader->skipDoc( docno );
+		strus::ArithmeticVariant value = m_metadatareader->getValue( m_metadata );
+		if( value.defined( ) ) {
+			elems.push_back( SummaryElement( value.tostring( ).c_str( ) ) );
+		} else {
+			elems.push_back( SummaryElement( "n/a" ) );
 		}
 
 		// remember all feature positions for the top N positions
@@ -143,6 +152,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 		}
 		if( boost::algorithm::iequals( name, "attribute" ) ) {
 			m_attribute = value;
+		} else if( boost::algorithm::iequals( name, "metadata" ) ) {
+			m_metadata = value;
 		} else if( boost::algorithm::iequals( name, "type" ) ) {
 			m_type = value;
 		} else if( boost::algorithm::iequals( name, "mark" ) ) {
@@ -171,12 +182,12 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 	const strus::GlobalStatistics& stats ) const
 {
 	try {
-		strus::AttributeReaderInterface *reader = storage->createAttributeReader( );
-		if( !reader ) {
+		strus::AttributeReaderInterface *attributeReader = storage->createAttributeReader( );
+		if( !attributeReader ) {
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, reader, m_attribute, m_type, m_N, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_type, m_N, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
 }
@@ -194,6 +205,7 @@ strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescr
 	try {
 		strus::SummarizerFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a summarizer 'test'" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::Attribute, "attribute", _TXT( "an attribute parameter" ) );
+		descr( strus::SummarizerFunctionInterface::Description::Param::Metadata, "metadata", _TXT( "a metadata parameter" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
 		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
