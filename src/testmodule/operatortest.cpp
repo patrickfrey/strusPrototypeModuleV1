@@ -42,34 +42,42 @@ TestPostingIterator::TestPostingIterator( const std::vector<strus::Reference< st
 
 strus::Index TestPostingIterator::skipDoc( const strus::Index &docno )
 {
+	return 0;
 }
 		
 strus::Index TestPostingIterator::skipDocCandidate( const strus::Index &docno )
 {
+	return 0;
 }
 		
 strus::Index TestPostingIterator::skipPos( const strus::Index &firstPos )
 {
+	return 0;
 }
 
 const char *TestPostingIterator::featureid( ) const
 {
+	return 0;
 }
  
 strus::Index TestPostingIterator::documentFrequency( ) const
 {
+	return 0;
 }
 	
 unsigned int TestPostingIterator::frequency( )
 {
+	return 0;
 }
 		
 strus::Index TestPostingIterator::docno( ) const
 {
+	return 0;
 }
 		
 strus::Index TestPostingIterator::posno( ) const
 {
+	return 0;
 }
 
 strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
