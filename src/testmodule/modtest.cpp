@@ -33,6 +33,7 @@
 #include "strus/storageModule.hpp"
 #include "strus/private/dll_tags.hpp"
 #include "operatortest.hpp"
+#include "window_joinop.hpp"
 #include "weightingtest.hpp"
 #include "summarizertest.hpp"
 
@@ -44,6 +45,7 @@ strus::PostingJoinOperatorInterface *createPostingIteratorTest_test( strus::Erro
 static const strus::PostingIteratorJoinConstructor operators[] =
 {
 	{ "test", createPostingIteratorTest_test },
+	{ "minwin", strus::createWindowJoinOperator },
 	{ 0, 0 }
 };
 
