@@ -85,13 +85,13 @@ strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 			int range,
 			unsigned int cardinality ) const
 {
-	if( range != 0 ) {
-		m_errorhnd->report( _TXT( "no range argument expected for 'test'" ) );
+	if( range <= 0 || (unsigned int)range < itrs.size( ) ) {
+		m_errorhnd->report( _TXT( "range of 'test' is out of range" ) );
 		return 0;
 	}
 	
-	if( cardinality != 0 ) {
-		m_errorhnd->report( _TXT( "no cardinality argument expected for 'test'" ) );
+	if( cardinality > itrs.size( ) ) {
+		m_errorhnd->report( _TXT( "ardinality of'test' is out of range" ) );
 		return 0;
 	}
 	
@@ -99,7 +99,7 @@ strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 		m_errorhnd->report( _TXT( "too few arguments for 'test'" ) );
 		return 0;
 	}
-
+	
 	try {
 		return new TestPostingIterator( itrs, m_errorhnd );
 	}
