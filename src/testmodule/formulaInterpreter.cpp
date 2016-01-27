@@ -36,6 +36,7 @@
 #include <iostream> 
 #include <iomanip> 
 #include <stdint.h> 
+#include <boost/math/tr1.hpp>
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -775,6 +776,11 @@ double FormulaInterpreter::run( void* ctx) const
 	{
 		throw strus::runtime_error(_TXT("illegal program code: program stack not empty after completion of program run"));
 	}
+	
+	if( isnan( rt ) || isinf( rt ) ) {
+		return -99999.99;
+	}
+	
 	return rt;
 }
 
