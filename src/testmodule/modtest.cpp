@@ -36,6 +36,7 @@
 #include "window_joinop.hpp"
 #include "weightingtest.hpp"
 #include "summarizertest.hpp"
+#include "weightingFormula.hpp"
 
 strus::PostingJoinOperatorInterface *createPostingIteratorTest_test( strus::ErrorBufferInterface *errorhnd )
 {
@@ -54,9 +55,15 @@ strus::WeightingFunctionInterface *createWeightingFunction_test( strus::ErrorBuf
 	return new test::WeightingFunctionTest( errorhnd );
 }
 
+strus::WeightingFunctionInterface *createWeightingFunction_formula( strus::ErrorBufferInterface *errorhnd )
+{
+	return new strus::WeightingFunctionFormula( errorhnd );
+}
+
 static const strus::WeightingFunctionConstructor weightingFunctions[] =
 {
 	{ "test", createWeightingFunction_test },
+	{ "formula_test", createWeightingFunction_formula },
 	{ 0, 0 }
 };
 

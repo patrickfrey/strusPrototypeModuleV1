@@ -3,7 +3,7 @@
     The C++ library strus implements basic operations to build
     a search engine for structured search on unstructured data.
 
-    Copyright (C) 2013,2014 Patrick Frey
+    Copyright (C) 2015 Patrick Frey
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/private/dll_tags.hpp"
-#include "internationalization.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <libintl.h>
