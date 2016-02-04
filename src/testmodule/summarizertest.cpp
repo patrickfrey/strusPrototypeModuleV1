@@ -180,6 +180,11 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 	}
 }
 
+void SummarizerFunctionInstanceTest::addBooleanParameter( const std::string& name, const bool& value)
+{
+	m_errorhnd->report( _TXT("unknown '%s' boolean summarization function parameter '%s'"), "test", name.c_str());
+}
+
 strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::createFunctionContext( 
 	const strus::StorageClientInterface* storage,
 	strus::MetaDataReaderInterface* metadata,
@@ -213,6 +218,7 @@ strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescr
 		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
 		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
+		descr( strus::SummarizerFunctionInterface::Description::Param::Boolean, "start_first_match", _TXT( "start with abstracting at the first match( default: first position of document)" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,

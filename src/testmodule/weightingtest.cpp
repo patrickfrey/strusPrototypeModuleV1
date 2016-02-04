@@ -94,6 +94,11 @@ void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name
 	}
 }
 
+void WeightingFunctionInstanceTest::addBooleanParameter( const std::string& name, const bool& value)
+{
+	m_errorhnd->report( _TXT( "unknown '%s' boolean weighting function parameter '%s'" ), "test", name.c_str( ) );
+}
+
 strus::WeightingFunctionContextInterface *WeightingFunctionInstanceTest::createFunctionContext( 
 	const strus::StorageClientInterface *storage_,
 	strus::MetaDataReaderInterface *metadata,
