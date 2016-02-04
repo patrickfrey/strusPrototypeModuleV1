@@ -76,11 +76,20 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
 			m_metadatareader( metadatareader ),
-			m_attribute( attribreader->elementHandle( attribute.c_str( ) ) ),
-			m_metadata( metadatareader->elementHandle( metadata.c_str( ) ) ),
+			m_attribute( 0 ),
+			m_metadata( 0 ),
 			m_N( N ),
 			m_mark( mark ),
 			m_errorhnd( errorhnd ) { 
+				
+				if( !attribute.empty( ) ) {
+					attribreader->elementHandle( attribute.c_str( ) );
+				}
+				
+				if( !metadata.empty( ) ) {
+					metadatareader->elementHandle( metadata.c_str( ) );
+				}
+				
 				m_forwardIndex = storage->createForwardIterator( type );
 				if( !m_forwardIndex ) {
 					throw strus::runtime_error( _TXT( "error creating forward index iterator" ) );

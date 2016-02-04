@@ -72,21 +72,25 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 		std::vector<SummaryElement> elems;
 
 		// show a first "bonus" attribute (just for demonstrating the concept)
-		m_attribreader->skipDoc( docno );
-		std::string attr = m_attribreader->getValue( m_attribute );
-		if( !attr.empty( ) ) { 
-			elems.push_back( SummaryElement( attr ) );
-		} else {
-			elems.push_back( SummaryElement( "..." ) );
+		if( m_attribute > 0 ) {
+			m_attribreader->skipDoc( docno );
+			std::string attr = m_attribreader->getValue( m_attribute );
+			if( !attr.empty( ) ) { 
+				elems.push_back( SummaryElement( attr ) );
+			} else {
+				elems.push_back( SummaryElement( "..." ) );
+			}
 		}
 		
 		// we also add a metadata feature (just for demonstrating the concept)
-		m_metadatareader->skipDoc( docno );
-		strus::ArithmeticVariant value = m_metadatareader->getValue( m_metadata );
-		if( value.defined( ) ) {
-			elems.push_back( SummaryElement( value.tostring( ).c_str( ) ) );
-		} else {
-			elems.push_back( SummaryElement( "n/a" ) );
+		if( m_metadata > 0 ) {
+			m_metadatareader->skipDoc( docno );
+			strus::ArithmeticVariant value = m_metadatareader->getValue( m_metadata );
+			if( value.defined( ) ) {
+				elems.push_back( SummaryElement( value.tostring( ).c_str( ) ) );
+			} else {
+				elems.push_back( SummaryElement( "n/a" ) );
+			}
 		}
 
 		// remember all feature positions for the top N positions
