@@ -92,17 +92,42 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 				elems.push_back( SummaryElement( "n/a" ) );
 			}
 		}
+		
+		strus::Index first_pos;
+		if( m_start_first_match ) {
+			first_pos = 99999999;
+			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
+				if( (*itr)->skipDoc( docno ) == docno ) {
+					strus::Index idxPos = (*itr)->skipPos( 0 );
+					if( idxPos != 0 ) {
+						first_pos = std::min( first_pos, idxPos );
+					}
+				}
+			}
+		} else {
+			first_pos = 0;
+			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
+				(*itr)->skipPos( first_pos );
+			}
+		}
 
 		// remember all feature positions for the top N positions
 		std::priority_queue< strus::Index, std::vector<strus::Index>, std::greater<strus::Index> > positions;
 		for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
 			if( (*itr)->skipDoc( docno ) == docno ) {
-				strus::Index idxPos = (*itr)->skipPos( 0 );
-				while( idxPos != 0 && idxPos <= m_N ) {
+				strus::Index idxPos = first_pos;
+				while( idxPos != 0 && idxPos <= first_pos + m_N ) {
 					positions.push( idxPos );
 					idxPos = (*itr)->skipPos( idxPos + 1 );
 				}
 			}
+		}
+		
+		// first position (for debugging)
+		{
+			std::stringstream ss;
+			ss << boost::format( "first_pos: %1%" ) % first_pos;
+			elems.push_back( ss.str( ) );
 		}
 
 		// skip in forward index to the right document
@@ -115,14 +140,14 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			nextMarkPos = positions.top( );
 			positions.pop( );
 		}
-		for( strus::Index pos = 0; pos <= m_N; pos++ ) {
+		for( strus::Index pos = first_pos; pos <= first_pos + m_N; pos++ ) {
 			m_forwardIndex->skipPos( pos );
 			std::string w = m_forwardIndex->fetch( );
 			if( pos == nextMarkPos ) {
 				std::stringstream ss;				
 				ss << boost::format( m_mark ) % w;
 				elems.push_back( ss.str( ) );
-				if( !positions.empty( ) ) {
+				while( !positions.empty( ) && nextMarkPos == pos ) {
 					nextMarkPos = positions.top( );
 					positions.pop( );
 				}
@@ -182,7 +207,11 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 
 void SummarizerFunctionInstanceTest::addBooleanParameter( const std::string& name, const bool& value)
 {
-	m_errorhnd->report( _TXT("unknown '%s' boolean summarization function parameter '%s'"), "test", name.c_str());
+	if( boost::algorithm::iequals( name, "start_first_match" ) ) {
+		m_start_first_match = value;
+	} else {
+		m_errorhnd->report( _TXT("unknown '%s' boolean summarization function parameter '%s'"), "test", name.c_str());
+	}
 }
 
 strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::createFunctionContext( 
@@ -196,7 +225,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_type, m_N, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_type, m_N, m_start_first_match, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
 }

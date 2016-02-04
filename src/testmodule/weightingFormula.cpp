@@ -273,7 +273,12 @@ void WeightingFunctionInstanceFormula::addNumericParameter( const std::string& n
 
 void WeightingFunctionInstanceFormula::addBooleanParameter( const std::string& name, const bool& value)
 {
-	m_errorhnd->report( _TXT("unknown boolean '%s' weighting function parameter '%s'"), "frequency", name.c_str());
+	try
+	{
+		m_functionmap.defineVariableMap( name, FormulaInterpreter::VariableMap( &FunctionMap::variableMap_param, m_paramar.size()));
+		m_paramar.push_back( (bool)value);		
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error adding boolean parameter to weighting function '%s': %s"), "formula", *m_errorhnd);
 }
 
 std::string WeightingFunctionInstanceFormula::tostring() const

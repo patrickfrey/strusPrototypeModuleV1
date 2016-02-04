@@ -56,6 +56,7 @@
 
 const unsigned int TEST_DEFAULT_N = 50;
 const std::string TEST_DEFAULT_MARK = "<b>%1%</b>";
+const bool TEST_DEFAULT_START_FIRST_MATCH = false;
 
 namespace test {
 
@@ -72,6 +73,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const std::string &metadata,
 			const std::string &type,
 			const unsigned int N,
+			const bool start_first_match,
 			const std::string mark,
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
@@ -79,6 +81,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			m_attribute( 0 ),
 			m_metadata( 0 ),
 			m_N( N ),
+			m_start_first_match( start_first_match ),
 			m_mark( mark ),
 			m_errorhnd( errorhnd ) { 
 				
@@ -116,6 +119,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		int m_attribute;
 		int m_metadata;
 		strus::Index m_N;
+		bool m_start_first_match;
 		std::string m_mark;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
@@ -131,12 +135,13 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		std::string m_metadata;
 		std::string m_type;
 		unsigned int m_N;
+		bool m_start_first_match;
 		std::string m_mark;
 
 	public:
 	
 		explicit SummarizerFunctionInstanceTest( strus::ErrorBufferInterface *errorhnd_ )
-			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), m_mark( TEST_DEFAULT_MARK ) { }
+			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), m_start_first_match( TEST_DEFAULT_START_FIRST_MATCH ), m_mark( TEST_DEFAULT_MARK ) { }
 
 		virtual ~SummarizerFunctionInstanceTest( ) { }
 
