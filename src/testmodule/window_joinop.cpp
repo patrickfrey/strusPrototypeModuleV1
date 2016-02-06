@@ -40,8 +40,9 @@
 using namespace strus;
 
 // Helper for boilerplate code catching exceptions and reporting them
-// via an error buffer interface, returning a value that indicates a
-// failed operation:
+// via an error buffer interface, returning an undefined value.
+// The caller of the function can check for a failed operation by inspecting
+// the ErrorBufferInterface passed to the object (ErrorBufferInterface::hasError()):
 #define CATCH_ERROR_MAP_RETURN( HND, VALUE)\
 	catch( const std::bad_alloc&)\
 	{\
@@ -250,7 +251,7 @@ public:
 	// The document frequency cannot be calculated without a fullscan of the 
 	// index for all matching documents also inspecting position.
 	// This is considered as too expensive. So is estimating.
-	// So we return the minimum document frequency of the arguments:
+	// So we return the minimum document frequency of the arguments.:
 	virtual Index documentFrequency() const
 	{
 		try
