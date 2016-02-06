@@ -161,8 +161,9 @@ std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( voi
 	PositionWindow win( itrs, range, cardinality, 0 );
 	if( !win.first( ) ) return std::make_pair( min_pos, min_size ); // no windows exists
 	do {
-		if( win.size( ) < min_size ) {
-			min_size = win.size( );
+		unsigned int winSize = win.size( );
+		if( winSize < min_size ) {
+			min_size = winSize;
 			min_pos = win.pos( );
 		}
 		std::cout << "win " << win.pos( ) << " " << win.size( ) << " "
