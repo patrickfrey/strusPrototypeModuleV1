@@ -166,8 +166,6 @@ std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( voi
 			min_size = winSize;
 			min_pos = win.pos( );
 		}
-		std::cout << "win " << win.pos( ) << " " << win.size( ) << " "
-			<< min_pos << " " << min_size << std::endl;
 	} while( win.next( ) );
 	return std::make_pair( min_pos, min_size );
 }
