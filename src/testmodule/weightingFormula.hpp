@@ -70,8 +70,9 @@ public:
 	static double binaryFunction_plus( double arg1, double arg2);
 	static double binaryFunction_mul( double arg1, double arg2);
 	static double binaryFunction_div( double arg1, double arg2);
-	static double weightingFunction_minwinsize( void* ctx, int typeidx, int range, int cardinality);
-	static double weightingFunction_minwinpos( void* ctx, int typeidx, int range, int cardinality);
+	static std::pair<unsigned int, unsigned int> weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality);
+	static double weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality);
+	static double weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality);
 };
 
 /// \class WeightingFunctionContextFormula
@@ -116,11 +117,17 @@ public:
 		{
 			return m_match?1.0:0.0;
 		}
+		
+		PostingIteratorInterface* itr() const
+		{
+			return m_itr;
+		}
 
 		void skipDoc( Index docno)
 		{
 			m_match = (docno == m_itr->skipDoc( docno));
 		}
+		
 
 	private:
 		PostingIteratorInterface* m_itr;

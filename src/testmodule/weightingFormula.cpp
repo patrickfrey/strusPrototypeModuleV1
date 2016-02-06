@@ -32,6 +32,7 @@
 #include "private/errorUtils.hpp"
 #include "private/utils.hpp"
 #include "strus/constants.hpp"
+#include "positionWindow.hpp"
 #include <cmath>
 #include <ctime>
 
@@ -50,8 +51,8 @@ FunctionMap::FunctionMap()
 	defineBinaryFunction( "+", &binaryFunction_plus);
 	defineBinaryFunction( "*", &binaryFunction_mul);
 	defineBinaryFunction( "/", &binaryFunction_div);
-	defineWeightingFunction( "minwinsize", &weightingFunction_minwinsize);
-	defineWeightingFunction( "minwinpos", &weightingFunction_minwinpos);
+	defineWeightingFunction( "minwinsize", &weightingFunction_minwinsize2);
+	defineWeightingFunction( "minwinpos", &weightingFunction_minwinpos2);
 }
 
 FormulaInterpreter::IteratorSpec FunctionMap::dimMap( void* ctx, const char* type)
@@ -145,16 +146,39 @@ double FunctionMap::binaryFunction_div( double arg1, double arg2)
 	return arg1 / arg2;
 }
 
-double FunctionMap::weightingFunction_minwinsize( void* ctx, int typeidx, int range, int cardinality)
+std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality)
 {
-	// Code for min window size calculation
-	return 3.0;
+	WeightingFunctionContextFormula* THIS = (WeightingFunctionContextFormula*)ctx;	
+	if (typeidx < 0) return std::make_pair( 999999, 999999 );
+	std::vector<PostingIteratorInterface*> itrs;	
+	for( std::vector<WeightingFunctionContextFormula::Feature>::const_iterator fitr = THIS->m_featar[typeidx].begin( ); fitr != THIS->m_featar[typeidx].end( ); fitr++ ) {
+		WeightingFunctionContextFormula::Feature feat = *fitr;
+		PostingIteratorInterface *itr = feat.itr( );
+		itrs.push_back( itr );
+	}
+	unsigned int min_pos = 999999;
+	unsigned int min_size = 999999;
+	PositionWindow win( itrs, range, cardinality, 0 );
+	if( !win.first( ) ) return std::make_pair( min_pos, min_size ); // no windows exists
+	do {
+		if( win.size( ) < min_size ) {
+			min_size = win.size( );
+			min_pos = win.pos( );
+		}
+		std::cout << "win " << win.pos( ) << " " << win.size( ) << " "
+			<< min_pos << " " << min_size << std::endl;
+	} while( win.next( ) );
+	return std::make_pair( min_pos, min_size );
 }
 
-double FunctionMap::weightingFunction_minwinpos( void* ctx, int typeidx, int range, int cardinality)
+double FunctionMap::weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality)
 {
-	// Code for min window first position calculation
-	return 1.0;
+	return weightingFunction_minwin( ctx, typeidx, range, cardinality ).first;
+}
+
+double FunctionMap::weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality)
+{
+	return weightingFunction_minwin( ctx, typeidx, range, cardinality ).second;
 }
 
 
