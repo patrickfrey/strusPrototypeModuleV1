@@ -123,13 +123,6 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			}
 		}
 		
-		// first position (for debugging)
-		{
-			std::stringstream ss;
-			ss << boost::format( "first_pos: %1%" ) % first_pos;
-			elems.push_back( ss.str( ) );
-		}
-
 		// skip in forward index to the right document
 		m_forwardIndex->skipDoc( docno );
 
