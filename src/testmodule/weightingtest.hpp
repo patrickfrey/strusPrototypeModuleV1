@@ -65,7 +65,7 @@ class WeightingFunctionContextTest : public strus::WeightingFunctionContextInter
 			float weight,
 			const strus::TermStatistics &stats );
 
-		virtual float call( const strus::Index &docno );
+		virtual double call( const strus::Index &docno );
 	
 	private:
 

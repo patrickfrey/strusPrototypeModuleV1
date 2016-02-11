@@ -56,7 +56,7 @@ void WeightingFunctionContextTest::addWeightingFeature( const std::string& name,
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding weighting feature to '%s' weighting: %s"), "test", *m_errorhnd );
 }
 
-float WeightingFunctionContextTest::call( const strus::Index &docno )
+double WeightingFunctionContextTest::call( const strus::Index &docno )
 {
 	// TODO: the weight is always a constant no mather whether the document
 	// actually contains the feature or not
