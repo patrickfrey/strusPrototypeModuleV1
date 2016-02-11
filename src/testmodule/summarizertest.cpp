@@ -191,19 +191,12 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 {
 	if( boost::algorithm::iequals( name, "N" ) ) {
 		m_N = (unsigned int)value;
+	} else if( boost::algorithm::iequals( name, "start_first_match" ) ) {
+		m_start_first_match = ( value.touint( ) > 0 );
 	} else if( boost::algorithm::iequals( name, "attribute" ) ) {		
 		m_errorhnd->report( _TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test" );
 	} else {
 		m_errorhnd->report( _TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test", name.c_str( ) );
-	}
-}
-
-void SummarizerFunctionInstanceTest::addBooleanParameter( const std::string& name, const bool& value)
-{
-	if( boost::algorithm::iequals( name, "start_first_match" ) ) {
-		m_start_first_match = value;
-	} else {
-		m_errorhnd->report( _TXT("unknown '%s' boolean summarization function parameter '%s'"), "test", name.c_str());
 	}
 }
 
@@ -240,7 +233,7 @@ strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescr
 		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
 		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
 		descr( strus::SummarizerFunctionInterface::Description::Param::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::Boolean, "start_first_match", _TXT( "start with abstracting at the first match( default: first position of document)" ) );
+		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "start_first_match", _TXT( "start with abstracting at the first match = 1 ( default: first position of document = 0)" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,
