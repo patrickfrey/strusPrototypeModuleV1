@@ -35,6 +35,7 @@
 #include "positionWindow.hpp"
 #include <cmath>
 #include <ctime>
+#include <boost/math/special_functions/sign.hpp>
 
 using namespace strus;
 
@@ -46,6 +47,7 @@ FunctionMap::FunctionMap()
 	defineVariableMap( "ff", &variableMap_ff);
 	defineVariableMap( "weight", &variableMap_weight);
 	defineUnaryFunction( "log", &unaryFunction_log10);
+	defineUnaryFunction( "sgn", &unaryFunction_sgn);
 	defineUnaryFunction( "-", &unaryFunction_minus);
 	defineBinaryFunction( "-", &binaryFunction_minus);
 	defineBinaryFunction( "+", &binaryFunction_plus);
@@ -124,6 +126,11 @@ double FunctionMap::unaryFunction_minus( double arg)
 double FunctionMap::unaryFunction_log10( double arg)
 {
 	return std::log( arg);
+}
+
+double FunctionMap::unaryFunction_sgn( double arg )
+{
+	return (double)boost::math::sign( arg );
 }
 
 double FunctionMap::binaryFunction_minus( double arg1, double arg2)
