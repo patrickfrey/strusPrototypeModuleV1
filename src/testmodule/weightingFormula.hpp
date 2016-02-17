@@ -67,10 +67,12 @@ public:
 	static double unaryFunction_minus( double arg);
 	static double unaryFunction_log10( double arg);
 	static double unaryFunction_sgn( double arg);
+	static double unaryFunction_sqrt( double arg);
 	static double binaryFunction_minus( double arg1, double arg2);
 	static double binaryFunction_plus( double arg1, double arg2);
 	static double binaryFunction_mul( double arg1, double arg2);
 	static double binaryFunction_div( double arg1, double arg2);
+	static double binaryFunction_pow( double arg1, double arg2);
 	static std::pair<unsigned int, unsigned int> weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality);
 	static double weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality);
 	static double weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality);

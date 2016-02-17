@@ -47,12 +47,14 @@ FunctionMap::FunctionMap()
 	defineVariableMap( "ff", &variableMap_ff);
 	defineVariableMap( "weight", &variableMap_weight);
 	defineUnaryFunction( "log", &unaryFunction_log10);
-	defineUnaryFunction( "sgn", &unaryFunction_sgn);
 	defineUnaryFunction( "-", &unaryFunction_minus);
+	defineUnaryFunction( "sgn", &unaryFunction_sgn);
+	defineUnaryFunction( "sqrt", &unaryFunction_sqrt);
 	defineBinaryFunction( "-", &binaryFunction_minus);
 	defineBinaryFunction( "+", &binaryFunction_plus);
 	defineBinaryFunction( "*", &binaryFunction_mul);
 	defineBinaryFunction( "/", &binaryFunction_div);
+	defineBinaryFunction( "pow", &binaryFunction_pow);
 	defineWeightingFunction( "minwinsize", &weightingFunction_minwinsize2);
 	defineWeightingFunction( "minwinpos", &weightingFunction_minwinpos2);
 }
@@ -133,6 +135,11 @@ double FunctionMap::unaryFunction_sgn( double arg )
 	return (double)boost::math::sign( arg );
 }
 
+double FunctionMap::unaryFunction_sqrt( double arg )
+{
+	return sqrt( arg );
+}
+
 double FunctionMap::binaryFunction_minus( double arg1, double arg2)
 {
 	return arg1 - arg2;
@@ -151,6 +158,11 @@ double FunctionMap::binaryFunction_mul( double arg1, double arg2)
 double FunctionMap::binaryFunction_div( double arg1, double arg2)
 {
 	return arg1 / arg2;
+}
+
+double FunctionMap::binaryFunction_pow( double arg1, double arg2)
+{
+	return pow( arg1, arg2 );
 }
 
 std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality)
