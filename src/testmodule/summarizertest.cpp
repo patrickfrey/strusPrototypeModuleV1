@@ -134,18 +134,19 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			positions.pop( );
 		}
 		for( strus::Index pos = first_pos; pos <= first_pos + m_N; pos++ ) {
-			m_forwardIndex->skipPos( pos );
-			std::string w = m_forwardIndex->fetch( );
-			if( pos == nextMarkPos ) {
-				std::stringstream ss;				
-				ss << boost::format( m_mark ) % w;
-				elems.push_back( ss.str( ) );
-				while( !positions.empty( ) && nextMarkPos == pos ) {
-					nextMarkPos = positions.top( );
-					positions.pop( );
+			if( m_forwardIndex->skipPos( pos ) == pos ) {
+				std::string w = m_forwardIndex->fetch( );
+				if( pos == nextMarkPos ) {
+					std::stringstream ss;				
+					ss << boost::format( m_mark ) % w;
+					elems.push_back( ss.str( ) );
+					while( !positions.empty( ) && nextMarkPos == pos ) {
+						nextMarkPos = positions.top( );
+						positions.pop( );
+					}
+				} else {
+					elems.push_back( w );
 				}
-			} else {
-				elems.push_back( w );
 			}
 		}
 	
