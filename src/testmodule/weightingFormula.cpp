@@ -92,7 +92,7 @@ double FunctionMap::variableMap_df( void* ctx, int typeidx, unsigned int idx)
 {
 	WeightingFunctionContextFormula* THIS = (WeightingFunctionContextFormula*)ctx;
 	if (typeidx < 0) return std::numeric_limits<double>::quiet_NaN();
-	if (idx >= THIS->m_featar[ typeidx].size()) return std::numeric_limits<double>::quiet_NaN();
+	if (idx >= THIS->m_featar[ typeidx].size()) return 0;
 	return THIS->m_featar[ typeidx][idx].df();
 }
 
@@ -100,7 +100,7 @@ double FunctionMap::variableMap_ff( void* ctx, int typeidx, unsigned int idx)
 {
 	WeightingFunctionContextFormula* THIS = (WeightingFunctionContextFormula*)ctx;
 	if (typeidx < 0) return std::numeric_limits<double>::quiet_NaN();
-	if (idx >= THIS->m_featar[ typeidx].size()) return std::numeric_limits<double>::quiet_NaN();
+	if (idx >= THIS->m_featar[ typeidx].size()) return 0;
 	return THIS->m_featar[ typeidx][idx].ff();
 }
 
