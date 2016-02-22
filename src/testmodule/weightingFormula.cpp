@@ -175,6 +175,14 @@ std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( voi
 		PostingIteratorInterface *itr = feat.itr( );
 		itrs.push_back( itr );
 	}
+	
+	// special case one query word, length of window is 1, position is the
+	// first occurence of the one query word
+	if( itrs.size( ) == 1 ) {
+		std::vector<PostingIteratorInterface*>::iterator itr = itrs.begin( );
+		Index min_pos = (*itr)->skipPos( 0 );
+		return std::make_pair( min_pos, 1 );
+	}
 	unsigned int min_pos = 999999;
 	unsigned int min_size = 999999;
 	PositionWindow win( itrs, range, cardinality, 0 );
@@ -189,12 +197,12 @@ std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( voi
 	return std::make_pair( min_pos, min_size );
 }
 
-double FunctionMap::weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality)
+double FunctionMap::weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality)
 {
 	return weightingFunction_minwin( ctx, typeidx, range, cardinality ).first;
 }
 
-double FunctionMap::weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality)
+double FunctionMap::weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality)
 {
 	return weightingFunction_minwin( ctx, typeidx, range, cardinality ).second;
 }
