@@ -94,20 +94,13 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 		}
 		
 		strus::Index first_pos;
-		if( m_start_first_match ) {
-			first_pos = 99999999;
-			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
-				if( (*itr)->skipDoc( docno ) == docno ) {
-					strus::Index idxPos = (*itr)->skipPos( 0 );
-					if( idxPos != 0 ) {
-						first_pos = std::min( first_pos, idxPos );
-					}
+		first_pos = 99999999;
+		for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
+			if( (*itr)->skipDoc( docno ) == docno ) {
+				strus::Index idxPos = (*itr)->skipPos( 0 );
+				if( idxPos != 0 ) {
+					first_pos = std::min( first_pos, idxPos );
 				}
-			}
-		} else {
-			first_pos = 0;
-			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
-				(*itr)->skipPos( first_pos );
 			}
 		}
 
@@ -133,7 +126,13 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			nextMarkPos = positions.top( );
 			positions.pop( );
 		}
-		for( strus::Index pos = first_pos; pos <= first_pos + m_N; pos++ ) {
+		strus::Index first_forward_pos;
+		if( m_start_first_match ) {
+			first_forward_pos = first_pos;
+		} else {
+			first_forward_pos = 0;
+		}		
+		for( strus::Index pos = first_forward_pos; pos <= first_forward_pos + m_N; pos++ ) {
 			if( m_forwardIndex->skipPos( pos ) == pos ) {
 				std::string w = m_forwardIndex->fetch( );
 				if( pos == nextMarkPos ) {
