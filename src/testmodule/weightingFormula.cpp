@@ -46,7 +46,8 @@ FunctionMap::FunctionMap()
 	defineVariableMap( "df", &variableMap_df);
 	defineVariableMap( "ff", &variableMap_ff);
 	defineVariableMap( "weight", &variableMap_weight);
-	defineUnaryFunction( "log", &unaryFunction_log10);
+	defineUnaryFunction( "log10", &unaryFunction_log10);
+	defineUnaryFunction( "log", &unaryFunction_log);
 	defineUnaryFunction( "-", &unaryFunction_minus);
 	defineUnaryFunction( "sgn", &unaryFunction_sgn);
 	defineUnaryFunction( "sqrt", &unaryFunction_sqrt);
@@ -126,6 +127,11 @@ double FunctionMap::unaryFunction_minus( double arg)
 }
 
 double FunctionMap::unaryFunction_log10( double arg)
+{
+	return std::log( arg) / std::log( 10);
+}
+
+double FunctionMap::unaryFunction_log( double arg)
 {
 	return std::log( arg);
 }

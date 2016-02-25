@@ -65,6 +65,7 @@ public:
 	static double variableMap_weight( void* ctx, int typeidx, unsigned int idx);
 	static double variableMap_match( void* ctx, int typeidx, unsigned int idx);
 	static double unaryFunction_minus( double arg);
+	static double unaryFunction_log( double arg);
 	static double unaryFunction_log10( double arg);
 	static double unaryFunction_sgn( double arg);
 	static double unaryFunction_sqrt( double arg);
