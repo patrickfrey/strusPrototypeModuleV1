@@ -66,19 +66,19 @@ void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding summarization feature to '%s' summarizer: %s" ), "test", *m_errorhnd );
 }
 
-std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> SummarizerFunctionContextTest::getSummary( const strus::Index &docno )
+std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( const strus::Index &docno )
 {
 	try {
-		std::vector<SummaryElement> elems;
+		std::vector<strus::SummaryElement> elems;
 
 		// show a first "bonus" attribute (just for demonstrating the concept)
 		if( m_attribute > 0 ) {
 			m_attribreader->skipDoc( docno );
 			std::string attr = m_attribreader->getValue( m_attribute );
 			if( !attr.empty( ) ) { 
-				elems.push_back( SummaryElement( attr ) );
+				elems.push_back( strus::SummaryElement( "attribute", attr ) );
 			} else {
-				elems.push_back( SummaryElement( "..." ) );
+				elems.push_back( strus::SummaryElement( "attribute", "..." ) );
 			}
 		}
 		
@@ -87,9 +87,9 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 			m_metadatareader->skipDoc( docno );
 			strus::ArithmeticVariant value = m_metadatareader->getValue( m_metadata );
 			if( value.defined( ) ) {
-				elems.push_back( SummaryElement( value.tostring( ).c_str( ) ) );
+				elems.push_back( strus::SummaryElement( "metadata", value.tostring( ).c_str( ) ) );
 			} else {
-				elems.push_back( SummaryElement( "n/a" ) );
+				elems.push_back( strus::SummaryElement( "metadata", "n/a" ) );
 			}
 		}
 		
@@ -138,20 +138,20 @@ std::vector<strus::SummarizerFunctionContextInterface::SummaryElement> Summarize
 				if( pos == nextMarkPos ) {
 					std::stringstream ss;				
 					ss << boost::format( m_mark ) % w;
-					elems.push_back( ss.str( ) );
+					elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
 					while( !positions.empty( ) && nextMarkPos == pos ) {
 						nextMarkPos = positions.top( );
 						positions.pop( );
 					}
 				} else {
-					elems.push_back( w );
+					elems.push_back( strus::SummaryElement( "forward", w ) );
 				}
 			}
 		}
 	
 		return elems;
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error fetching '%s' summary: %s" ), "test", *m_errorhnd, std::vector<strus::SummarizerFunctionContextInterface::SummaryElement>( ) );
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error fetching '%s' summary: %s" ), "test", *m_errorhnd, std::vector<strus::SummaryElement>( ) );
 }
 
 std::string SummarizerFunctionInstanceTest::tostring() const

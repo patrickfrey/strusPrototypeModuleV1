@@ -110,7 +110,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			float /*weight*/,
 			const strus::TermStatistics &);
 		
-		virtual std::vector<SummarizerFunctionContextInterface::SummaryElement> getSummary( const strus::Index &docno );
+		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
 	
 	private:
 
