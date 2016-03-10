@@ -264,6 +264,7 @@ double WeightingFunctionContextFormula::call( const Index& docno)
 			fi->skipDoc( docno);
 		}
 	}
+	m_metadata->skipDoc( docno );
 	try
 	{
 		return m_interpreter.run( this);
