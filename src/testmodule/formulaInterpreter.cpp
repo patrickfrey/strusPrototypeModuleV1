@@ -38,7 +38,7 @@
 #include <stdint.h> 
 #include <boost/math/tr1.hpp>
 
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
 using namespace strus;
 
