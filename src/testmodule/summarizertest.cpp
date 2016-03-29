@@ -12,7 +12,7 @@
 
 #include "strus/attributeReaderInterface.hpp"
 #include "strus/storageClientInterface.hpp"
-#include "strus/arithmeticVariant.hpp"
+#include "strus/numericVariant.hpp"
 
 #include "strus/private/errorUtils.hpp"
 
@@ -63,7 +63,7 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 		// we also add a metadata feature (just for demonstrating the concept)
 		if( m_metadata > 0 ) {
 			m_metadatareader->skipDoc( docno );
-			strus::ArithmeticVariant value = m_metadatareader->getValue( m_metadata );
+			strus::NumericVariant value = m_metadatareader->getValue( m_metadata );
 			if( value.defined( ) ) {
 				elems.push_back( strus::SummaryElement( "metadata", value.tostring( ).c_str( ) ) );
 			} else {
@@ -165,7 +165,7 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' summarizer: %s"), "test", *m_errorhnd );
 }
 
-void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::ArithmeticVariant& value )
+void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::NumericVariant& value )
 {
 	if( boost::algorithm::iequals( name, "N" ) ) {
 		m_N = (unsigned int)value;

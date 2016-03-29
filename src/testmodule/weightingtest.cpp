@@ -63,7 +63,7 @@ void WeightingFunctionInstanceTest::addStringParameter( const std::string& name,
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' weighting: %s"), "test", *m_errorhnd );
 }
 
-void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::ArithmeticVariant& value )
+void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::NumericVariant& value )
 {
 	if( boost::algorithm::iequals( name, "param" ) ) {
 		m_param = (double)value;

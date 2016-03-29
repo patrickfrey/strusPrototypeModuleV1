@@ -69,7 +69,7 @@ class WeightingFunctionInstanceTest : public strus::WeightingFunctionInstanceInt
 		virtual ~WeightingFunctionInstanceTest( ) { }
 
 		virtual void addStringParameter( const std::string& name, const std::string& value );
-		virtual void addNumericParameter( const std::string& name, const strus::ArithmeticVariant& value );
+		virtual void addNumericParameter( const std::string& name, const strus::NumericVariant& value );
 
 		virtual strus::WeightingFunctionContextInterface* createFunctionContext(
 			const strus::StorageClientInterface* storage_,
