@@ -56,6 +56,8 @@ public:
 	static double binaryFunction_mul( double arg1, double arg2);
 	static double binaryFunction_div( double arg1, double arg2);
 	static double binaryFunction_pow( double arg1, double arg2);
+	static double binaryFunction_min( double arg1, double arg2);
+	static double binaryFunction_max( double arg1, double arg2);
 	static std::pair<unsigned int, unsigned int> weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality);
 	static double weightingFunction_minwinsize2( void* ctx, int typeidx, int range, int cardinality);
 	static double weightingFunction_minwinpos2( void* ctx, int typeidx, int range, int cardinality);

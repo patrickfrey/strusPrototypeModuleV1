@@ -17,6 +17,7 @@
 #include "positionWindow.hpp"
 #include <cmath>
 #include <ctime>
+#include <algorithm>
 #include <boost/math/special_functions/sign.hpp>
 
 using namespace strus;
@@ -38,6 +39,8 @@ FunctionMap::FunctionMap()
 	defineBinaryFunction( "*", &binaryFunction_mul);
 	defineBinaryFunction( "/", &binaryFunction_div);
 	defineBinaryFunction( "pow", &binaryFunction_pow);
+	defineBinaryFunction( "min", &binaryFunction_min);
+	defineBinaryFunction( "max", &binaryFunction_max);
 	defineWeightingFunction( "minwinsize", &weightingFunction_minwinsize2);
 	defineWeightingFunction( "minwinpos", &weightingFunction_minwinpos2);
 }
@@ -151,6 +154,16 @@ double FunctionMap::binaryFunction_div( double arg1, double arg2)
 double FunctionMap::binaryFunction_pow( double arg1, double arg2)
 {
 	return pow( arg1, arg2 );
+}
+
+double FunctionMap::binaryFunction_min( double arg1, double arg2)
+{
+	return std::min( arg1, arg2 );
+}
+
+double FunctionMap::binaryFunction_max( double arg1, double arg2)
+{
+	return std::max( arg1, arg2 );
 }
 
 std::pair<unsigned int, unsigned int> FunctionMap::weightingFunction_minwin( void* ctx, int typeidx, int range, int cardinality)
