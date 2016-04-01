@@ -149,7 +149,7 @@ class SummarizerFunctionTest : public strus::SummarizerFunctionInterface
 
 		virtual strus::SummarizerFunctionInstanceInterface *createInstance( const strus::QueryProcessorInterface *query_processor ) const;
 
-		virtual strus::SummarizerFunctionInterface::Description getDescription( ) const;
+		virtual strus::FunctionDescription getDescription( ) const;
 };
 
 } // namespace test

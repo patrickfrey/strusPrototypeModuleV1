@@ -92,9 +92,9 @@ class WeightingFunctionTest : public strus::WeightingFunctionInterface
 
 		virtual ~WeightingFunctionTest( ) { }
 
-		virtual strus::WeightingFunctionInstanceInterface* createInstance( ) const;
+		virtual strus::WeightingFunctionInstanceInterface* createInstance( const strus::QueryProcessorInterface *processor ) const;
 
-		virtual strus::WeightingFunctionInterface::Description getDescription( ) const;
+		virtual strus::FunctionDescription getDescription( ) const;
 };
 
 } // namespace test

@@ -202,20 +202,20 @@ strus::SummarizerFunctionInstanceInterface *SummarizerFunctionTest::createInstan
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating instance of '%s' summarizer: %s" ), "test", *m_errorhnd, 0 );
 }
 
-strus::SummarizerFunctionInterface::Description SummarizerFunctionTest::getDescription( ) const
+strus::FunctionDescription SummarizerFunctionTest::getDescription( ) const
 {
 	try {
-		strus::SummarizerFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a summarizer 'test'" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::Attribute, "attribute", _TXT( "an attribute parameter" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::Metadata, "metadata", _TXT( "a metadata parameter" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
-		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "N", _TXT( "maximal size of the abstract" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
-		descr( strus::SummarizerFunctionInterface::Description::Param::Numeric, "start_first_match", _TXT( "start with abstracting at the first match = 1 ( default: first position of document = 0)" ) );
+		strus::FunctionDescription descr( _TXT( "Demonstrating how to implement a summarizer 'test'" ) );
+		descr( strus::FunctionDescription::Parameter::Attribute, "attribute", _TXT( "an attribute parameter" ) );
+		descr( strus::FunctionDescription::Parameter::Metadata, "metadata", _TXT( "a metadata parameter" ) );
+		descr( strus::FunctionDescription::Parameter::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
+		descr( strus::FunctionDescription::Parameter::Numeric, "N", _TXT( "maximal size of the abstract" ) );
+		descr( strus::FunctionDescription::Parameter::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
+		descr( strus::FunctionDescription::Parameter::Numeric, "start_first_match", _TXT( "start with abstracting at the first match = 1 ( default: first position of document = 0)" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,
-		strus::SummarizerFunctionInterface::Description( ) );
+		strus::FunctionDescription( ) );
 }
 
 } // namespace test

@@ -83,7 +83,7 @@ strus::WeightingFunctionContextInterface *WeightingFunctionInstanceTest::createF
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating context of '%s' weighting function: %s" ), "test", *m_errorhnd, 0 );
 }
 
-strus::WeightingFunctionInstanceInterface* WeightingFunctionTest::createInstance( ) const
+strus::WeightingFunctionInstanceInterface* WeightingFunctionTest::createInstance( const strus::QueryProcessorInterface *processor ) const
 {
 	try {
 		return new WeightingFunctionInstanceTest( m_errorhnd );
@@ -91,16 +91,16 @@ strus::WeightingFunctionInstanceInterface* WeightingFunctionTest::createInstance
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating instance of '%s' function: %s" ), "test", *m_errorhnd, 0 );
 }
 
-strus::WeightingFunctionInterface::Description WeightingFunctionTest::getDescription( ) const
+strus::FunctionDescription WeightingFunctionTest::getDescription( ) const
 {
 	try {
-		strus::WeightingFunctionInterface::Description descr( _TXT( "Demonstrating how to implement a weighting schema 'test'" ) );
-		descr( strus::WeightingFunctionInterface::Description::Param::Numeric, "param", _TXT( "a dummy parameter" ) );
-		descr( strus::WeightingFunctionInterface::Description::Param::Feature, "match", _TXT( "defines the query features to weight"));
+		strus::FunctionDescription descr( _TXT( "Demonstrating how to implement a weighting schema 'test'" ) );
+		descr( strus::FunctionDescription::Parameter::Numeric, "param", _TXT( "a dummy parameter" ) );
+		descr( strus::FunctionDescription::Parameter::Feature, "match", _TXT( "defines the query features to weight"));
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating weighting function description for '%s': %s" ), "test", *m_errorhnd,
-		strus::WeightingFunctionInterface::Description( ) );
+		strus::FunctionDescription( ) );
 }
 
 } // namespace test
