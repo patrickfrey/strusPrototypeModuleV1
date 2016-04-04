@@ -6,8 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "private/dll_tags.hpp"
-#include "private/internationalization.hpp"
+#include "strus/private/dll_tags.hpp"
+#include "strus/private/internationalization.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <libintl.h>

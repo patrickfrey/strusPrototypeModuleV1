@@ -23,7 +23,7 @@ link_directories(
 # ------------------------------------
 add_library( modtest MODULE modtest.cpp internationalization.cpp postingIteratorHelpers.cpp positionWindow.cpp window_joinop.cpp operatortest.cpp weightingtest.cpp summarizertest.cpp formulaInterpreter.cpp weightingFormula.cpp utils.cpp )
 set_target_properties( modtest PROPERTIES PREFIX "")
-target_link_libraries( modtest strus_module )
+target_link_libraries( modtest strus_module ${Intl_LIBRARIES} ${Boost_LIBRARIES} )
 
 # ------------------------------
 # INSTALLATION
