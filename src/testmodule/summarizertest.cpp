@@ -31,7 +31,7 @@ namespace test {
 void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &name,
 			strus::PostingIteratorInterface *itr,
 			const std::vector<strus::SummarizationVariable> &,
-			float /*weight*/,
+			double /*weight*/,
 			const strus::TermStatistics &)
 {
 	try {

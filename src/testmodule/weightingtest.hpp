@@ -40,7 +40,7 @@ class WeightingFunctionContextTest : public strus::WeightingFunctionContextInter
 
 		virtual void addWeightingFeature( const std::string &name,
 			strus::PostingIteratorInterface *itr,
-			float weight,
+			double weight,
 			const strus::TermStatistics &stats );
 
 		virtual double call( const strus::Index &docno );

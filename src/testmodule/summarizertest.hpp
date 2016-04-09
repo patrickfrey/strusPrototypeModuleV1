@@ -85,7 +85,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		virtual void addSummarizationFeature( const std::string &name,
 			strus::PostingIteratorInterface *itr,
 			const std::vector<strus::SummarizationVariable> &,
-			float /*weight*/,
+			double /*weight*/,
 			const strus::TermStatistics &);
 		
 		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
