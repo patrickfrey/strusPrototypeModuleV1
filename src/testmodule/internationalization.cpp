@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "strus/private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "strus/private/internationalization.hpp"
 #include <stdio.h>
 #include <stdlib.h>

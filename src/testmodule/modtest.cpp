@@ -9,7 +9,7 @@
  */
 
 #include "strus/storageModule.hpp"
-#include "strus/private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "operatortest.hpp"
 #include "window_joinop.hpp"
 #include "weightingtest.hpp"
