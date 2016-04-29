@@ -21,7 +21,7 @@ in a simple language. The language contains:
   being an integer or floating point `constant` representing the null element
   of the function, e. g.
 
-  `{feat,+,0}{ff}` adds up all values of `ff` of feature set `feat` starting with
+  `<feat,+,0>{ff}` adds up all values of `ff` of feature set `feat` starting with
   `0`.
 
 Notes:
