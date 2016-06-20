@@ -1,4 +1,4 @@
-# StrusWebService spec file
+# StrusPrototypeModuleV1 spec file
 
 # Set distribution based on some OpenSuse and distribution macros
 # this is only relevant when building on https://build.opensuse.org
@@ -112,9 +112,9 @@
 %define sles 1
 %endif
 
-Summary: Web service exposing the strus API
-Name: struswebservice
-%define main_version @STRUS_WEB_SERVICE_VERSION@
+Summary: Example prototype strus modules V1
+Name: strusprototypemodulev1
+%define main_version @STRUS_PROTOTYPE_MODULE_V1_VERSION@
 Version: %{main_version}
 Release: 0.1
 License: MPLv2
@@ -122,7 +122,7 @@ Group: Development/Libraries/C++
 
 Source: %{name}_%{main_version}.tar.gz
 
-URL: http://github.com/Eurospider/strusWebService
+URL: http://github.com/Eurospider/strusPrototypeModuleV1
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -206,21 +206,6 @@ BuildRequires: boost-devel
 %endif
 %endif
 
-%if %{rhel} || %{centos} || %{scilin}
-BuildRequires: libcppcms-devel
-Requires: libcppcms
-%endif
-
-%if %{fedora}
-BuildRequires: libcppcms-devel
-Requires: libcppcms
-%endif
-
-%if %{suse} || %{sles}
-BuildRequires: libcppcms-devel
-Requires: libcppcms
-%endif
-
 BuildRequires: strusbase-devel >= 0.9.0
 BuildRequires: strusbase >= 0.9.0
 Requires: strusbase >= 0.9.0
@@ -237,18 +222,6 @@ BuildRequires: strusmodule-devel >= 0.9.0
 BuildRequires: strusmodule >= 0.9.0
 Requires: strusmodule >= 0.9.0
 
-%if %{rhel} || %{centos} || %{scilin}
-BuildRequires: curl-devel
-%endif
-
-%if %{fedora}
-BuildRequires: libcurl-devel
-%endif
-
-%if %{suse} || %{sles}
-BuildRequires: libcurl-devel
-%endif
-
 # Check if 'Distribution' is really set by OBS (as mentioned in bacula)
 %if ! 0%{?opensuse_bs}
 Distribution: %{dist}
@@ -257,8 +230,7 @@ Distribution: %{dist}
 Packager: Andreas Baumann <mail@andreasbaumann.cc>
 
 %description
-Webservice implementing a simple HTTP with JSON webservice for the
-strus search engine API.
+Example strus prototype modules.
 
 %prep
 %setup -n %{name}-%{main_version}
@@ -272,77 +244,17 @@ make %{?_smp_mflags}
 
 make DESTDIR=$RPM_BUILD_ROOT install
 
-%if %{rhel} || %{centos} || %{scilin}
-%if %{rhel6} || %{centos6} || %{scilin6}
-install -D -m775 dist/redhat/strusWebService.RHEL $RPM_BUILD_ROOT%{_initrddir}/strusWebService
-%endif
-install -D -m664 dist/redhat/strusWebService.conf-RHEL $RPM_BUILD_ROOT%{_sysconfdir}/strusWebService/strusWebService.conf
-%endif
-
-install -d -m775 $RPM_BUILD_ROOT%{_localstatedir}/log/strusWebService
-
-install -d -m755 $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService
-install -d -m755 $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www
-install -d -m755 $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www/css
-install -d -m755 $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www/js
-install -m664 democlient/index.html $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www/index.html
-install -m664 democlient/css/*.css $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www/css/.
-install -m664 democlient/js/*.js $RPM_BUILD_ROOT%{_sharedstatedir}/strusWebService/www/js/.
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %check
-#make run
 #make test
-#pkill strusWebService
-
-%pre
-/usr/bin/getent group struswebservice >/dev/null || /usr/sbin/groupadd struswebservice > /dev/null 2>&1
-/usr/bin/getent passwd struswebservice >/dev/null || /usr/sbin/useradd -g struswebservice struswebservice -c "StrusWebService user" -d %{_sharedstatedir}/strusWebService > /dev/null 2>&1
-
-%post
-/sbin/chkconfig --add strusWebService
-/sbin/chkconfig strusWebService on
-/sbin/service strusWebService start > /dev/null 2>&1
-
-%preun
-if [ "$1" = 0 ]; then
-	/sbin/service strusWebService stop > /dev/null 2>&1
-	/sbin/chkconfig strusWebService off
-	/sbin/chkconfig --del strusWebService
-	rm -rf /var/log/strusWebService/*
-fi
-
-%postun
-/usr/sbin/userdel struswebservice
-rm -rf /var/run/strusWebService
 
 %files
 %defattr( -, root, root )
-%{_sbindir}/strusWebService
-%dir %attr(0755, root, root) %{_sysconfdir}/strusWebService
-%config(noreplace) %attr(0644, root, root) %{_sysconfdir}/strusWebService/strusWebService.conf
-%if %{rhel} || %{centos} || %{scilin}
-%if %{rhel6} || %{centos6} || %{scilin6}
-%attr( 554, root, root) %{_initrddir}/strusWebService
-%endif
-%endif
-%attr(0775, struswebservice, struswebservice) %dir %{_localstatedir}/log/strusWebService
-%attr(0775, struswebservice, struswebservice) %dir %{_sharedstatedir}/strusWebService
-%attr(0775, struswebservice, struswebservice) %dir %{_sharedstatedir}/strusWebService/www
-%attr(0775, struswebservice, struswebservice) %dir %{_sharedstatedir}/strusWebService/www/css
-%attr(0775, struswebservice, struswebservice) %dir %{_sharedstatedir}/strusWebService/www/js
-%attr(0440, struswebservice, struswebservice) %{_sharedstatedir}/strusWebService/www/*.html
-%attr(0440, struswebservice, struswebservice) %{_sharedstatedir}/strusWebService/www/css/*.css
-%attr(0440, struswebservice, struswebservice) %{_sharedstatedir}/strusWebService/www/js/*.js
+%dir %{_libdir}/strus/modules
+%{_libdir}/strus/modules/modtest.so
 
 %changelog
-* Sat Apr 30 2016 Andreas Baumann <mail@andreasbaumann.cc> 0.0.3-0.1
-- used in first demo projects
-
-* Thu Feb 25 2016 Andreas Baumann <mail@andreasbaumann.cc> 0.0.2-0.1
-- stable release with basic functionality finished
-
-* Tue Nov 10 2015 Andreas Baumann <mail@andreasbaumann.cc> 0.0.1-0.1
+* Mon Jun 20 2016 Andreas Baumann <mail@andreasbaumann.cc> 0.0.3-0.1
 - initial release
