@@ -2,7 +2,7 @@
 # adapted for various compressors
 
 string(TOLOWER ${CMAKE_PROJECT_NAME} PACKAGE_NAME)
-set(ARCHIVE_NAME ${PACKAGE_NAME}-${STRUS_VERSION})
+set(ARCHIVE_NAME ${PACKAGE_NAME}-${STRUS_PROTOTYPE_MODULE_V1_VERSION})
 add_custom_target(dist
     COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
         > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar
