@@ -191,7 +191,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 		}
 		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_type, m_N, m_start_first_match, m_mark, m_errorhnd );
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "attribute", *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test", *m_errorhnd, 0);
 }
 
 strus::SummarizerFunctionInstanceInterface *SummarizerFunctionTest::createInstance( const strus::QueryProcessorInterface *query_processor ) const
