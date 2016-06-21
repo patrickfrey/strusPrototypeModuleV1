@@ -14,6 +14,7 @@
 #include "window_joinop.hpp"
 #include "weightingtest.hpp"
 #include "summarizertest.hpp"
+#include "summarizertest2.hpp"
 #include "weightingFormula.hpp"
 
 strus::PostingJoinOperatorInterface *createPostingIteratorTest_test( strus::ErrorBufferInterface *errorhnd )
@@ -50,9 +51,15 @@ strus::SummarizerFunctionInterface *createSummarizerFunction_test( strus::ErrorB
 	return new test::SummarizerFunctionTest( errorhnd );
 }
 
+strus::SummarizerFunctionInterface *createSummarizerFunction_test2( strus::ErrorBufferInterface *errorhnd )
+{
+	return new test::SummarizerFunctionTest2( errorhnd );
+}
+
 static const strus::SummarizerFunctionConstructor summarizers[] =
 {
 	{ "test", createSummarizerFunction_test },
+	{ "test2", createSummarizerFunction_test2 },
 	{ 0, 0 }
 };
 
