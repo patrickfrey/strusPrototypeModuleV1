@@ -49,7 +49,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			strus::MetaDataReaderInterface *metadatareader,
 			const std::string &attribute,
 			const std::string &metadata,
-			const std::string &type,
+			const std::vector<std::string> &types,
 			const unsigned int N,
 			const bool start_first_match,
 			const std::string mark,
@@ -58,6 +58,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			m_metadatareader( metadatareader ),
 			m_attribute( 0 ),
 			m_metadata( 0 ),
+			m_types( types ),
 			m_N( N ),
 			m_start_first_match( start_first_match ),
 			m_mark( mark ),
@@ -69,17 +70,22 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 				
 				if( !metadata.empty( ) ) {
 					metadatareader->elementHandle( metadata.c_str( ) );
-				}
-				
-				m_forwardIndex = storage->createForwardIterator( type );
-				if( !m_forwardIndex ) {
-					throw strus::runtime_error( _TXT( "error creating forward index iterator" ) );
+				}				
+
+				for( std::vector<std::string>::const_iterator it = m_types.begin( ); it != m_types.end( ); it++ ) {
+					strus::ForwardIteratorInterface *fit = storage->createForwardIterator( *it );
+					if( !fit ) {
+						throw strus::runtime_error( _TXT( "error creating forward index iterator" ) );
+					}
+					m_forwardIndex.push_back( fit );
 				}
 			}
 				
 		virtual ~SummarizerFunctionContextTest( ) {
 			delete m_attribreader;
-			delete m_forwardIndex;
+			for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
+				delete *it;
+			}
 		}
 
 		virtual void addSummarizationFeature( const std::string &name,
@@ -96,12 +102,13 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		strus::MetaDataReaderInterface *m_metadatareader;
 		int m_attribute;
 		int m_metadata;
+		std::vector<std::string> m_types;
 		strus::Index m_N;
 		bool m_start_first_match;
 		std::string m_mark;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
-		strus::ForwardIteratorInterface *m_forwardIndex;
+		std::vector<strus::ForwardIteratorInterface*> m_forwardIndex;
 };
 
 class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceInterface
@@ -111,7 +118,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::string m_attribute;
 		std::string m_metadata;
-		std::string m_type;
+		std::vector<std::string> m_types;
 		unsigned int m_N;
 		bool m_start_first_match;
 		std::string m_mark;

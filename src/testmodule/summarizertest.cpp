@@ -95,7 +95,9 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 		}
 		
 		// skip in forward index to the right document
-		m_forwardIndex->skipDoc( docno );
+		for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
+			(*it)->skipDoc( docno );
+		}
 
 		// iterate through forward index up to position N, if we have found
 		// a feature we must "highlight", we do so.
@@ -111,18 +113,20 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 			first_forward_pos = 0;
 		}		
 		for( strus::Index pos = first_forward_pos; pos <= first_forward_pos + m_N; pos++ ) {
-			if( m_forwardIndex->skipPos( pos ) == pos ) {
-				std::string w = m_forwardIndex->fetch( );
-				if( pos == nextMarkPos ) {
-					std::stringstream ss;				
-					ss << boost::format( m_mark ) % w;
-					elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
-					while( !positions.empty( ) && nextMarkPos == pos ) {
-						nextMarkPos = positions.top( );
-						positions.pop( );
+			for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
+				if( (*it)->skipPos( pos ) == pos ) {
+					std::string w = (*it)->fetch( );
+					if( pos == nextMarkPos ) {
+						std::stringstream ss;				
+						ss << boost::format( m_mark ) % w;
+						elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
+						while( !positions.empty( ) && nextMarkPos == pos ) {
+							nextMarkPos = positions.top( );
+							positions.pop( );
+						}
+					} else {
+						elems.push_back( strus::SummaryElement( "forward", w ) );
 					}
-				} else {
-					elems.push_back( strus::SummaryElement( "forward", w ) );
 				}
 			}
 		}
@@ -137,7 +141,14 @@ std::string SummarizerFunctionInstanceTest::tostring() const
 	try
 	{
 		std::ostringstream rt;
-		rt << "attribute='" << m_attribute << "', type='" << m_type << "', N=" << m_N;
+		rt << "attribute='" << m_attribute << "', types=(";
+		bool first = true;
+		for( std::vector<std::string>::const_iterator it = m_types.begin( ); it != m_types.end( ); it++ ) {
+			if( !first ) rt << ", ";
+			first = false;
+			rt << *it;
+		}
+		rt << "), N=" << m_N;
 		return rt.str();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error mapping '%s' summarizer function to string: %s" ), "test", *m_errorhnd, std::string( ) );
@@ -155,7 +166,7 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 		} else if( boost::algorithm::iequals( name, "metadata" ) ) {
 			m_metadata = value;
 		} else if( boost::algorithm::iequals( name, "type" ) ) {
-			m_type = value;
+			m_types.push_back( value );
 		} else if( boost::algorithm::iequals( name, "mark" ) ) {
 			m_mark = value;
 		} else {
@@ -189,7 +200,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_type, m_N, m_start_first_match, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_N, m_start_first_match, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test", *m_errorhnd, 0);
 }
