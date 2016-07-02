@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 #include <queue>
+#include <set>
 
 #include <iomanip>
 
@@ -86,6 +87,8 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 		
 		// skip in forward index to the right document
 		m_forwardIndex->skipDoc( docno );
+		
+		std::set<std::string> candidates;
 
 		// iterate through forward index up to position N, if we have found
 		// a feature we must "highlight", we do so.
@@ -106,7 +109,10 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 				std::cout << "DEBUG: forward position skip " << pos << std::endl;
 #endif
 				std::string w = m_forwardIndex->fetch( );
-				elems.push_back( strus::SummaryElement( "forward", w ) );				
+				if( candidates.find( w ) == candidates.end( ) ) {
+					elems.push_back( strus::SummaryElement( "forward", w ) );
+					candidates.insert( w );				
+				}
 			}
 		}
 			
