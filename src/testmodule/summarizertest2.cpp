@@ -26,7 +26,7 @@
 
 #include <iomanip>
 
-#define LOWLEVEL_DEBUG
+#undef LOWLEVEL_DEBUG
 
 #ifdef LOWLEVEL_DEBUG
 #include <iostream>
