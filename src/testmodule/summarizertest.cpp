@@ -26,6 +26,8 @@
 #include <iostream>
 #include <iomanip>
 
+#undef STRUS_LOWLEVEL_DEBUG
+
 namespace test {
 
 void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &name,
@@ -44,6 +46,30 @@ void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding summarization feature to '%s' summarizer: %s" ), "test", *m_errorhnd );
 }
 
+struct Candidate {
+	strus::Index start;
+	strus::Index end;
+	unsigned int hits;
+	
+	bool operator <( const Candidate &other ) const
+    {
+		if( hits < other.hits ) return false;
+		if( hits == other.hits ) {
+			if( start > other.start ) return false;
+			return true;
+		}
+		return true;
+    }
+};
+
+struct FinalSorter {
+	inline bool operator( )( const Candidate &c1, const Candidate &c2 )
+	{
+		if( c1.start < c2.start ) return true;
+		return false;
+	}
+};
+
 std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( const strus::Index &docno )
 {
 	try {
@@ -56,7 +82,7 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 			if( !attr.empty( ) ) { 
 				elems.push_back( strus::SummaryElement( "attribute", attr ) );
 			} else {
-				elems.push_back( strus::SummaryElement( "attribute", "..." ) );
+				elems.push_back( strus::SummaryElement( "attribute", "n/a" ) );
 			}
 		}
 		
@@ -70,62 +96,184 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 				elems.push_back( strus::SummaryElement( "metadata", "n/a" ) );
 			}
 		}
-		
-		strus::Index first_pos;
-		first_pos = 99999999;
-		for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
-			if( (*itr)->skipDoc( docno ) == docno ) {
-				strus::Index idxPos = (*itr)->skipPos( 0 );
-				if( idxPos != 0 ) {
-					first_pos = std::min( first_pos, idxPos );
+
+		// more sophisticated, find best sentences if we have a sentence marker
+		if( m_sentenceIndex > 0 ) {
+			// position all iterators of all matching features to the
+			// document and first position
+			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
+				if( (*itr)->skipDoc( docno ) == docno ) {
+					(*itr)->skipPos( 0 );
 				}
 			}
-		}
 
-		// remember all feature positions for the top N positions
-		std::priority_queue< strus::Index, std::vector<strus::Index>, std::greater<strus::Index> > positions;
-		for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
-			if( (*itr)->skipDoc( docno ) == docno ) {
-				strus::Index idxPos = first_pos;
-				while( idxPos != 0 && idxPos <= first_pos + m_N ) {
-					positions.push( idxPos );
-					idxPos = (*itr)->skipPos( idxPos + 1 );
-				}
-			}
-		}
-		
-		// skip in forward index to the right document
-		for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
-			(*it)->skipDoc( docno );
-		}
-
-		// iterate through forward index up to position N, if we have found
-		// a feature we must "highlight", we do so.
-		strus::Index nextMarkPos = -1;
-		if( !positions.empty( ) ) {
-			nextMarkPos = positions.top( );
-			positions.pop( );
-		}
-		strus::Index first_forward_pos;
-		if( m_start_first_match ) {
-			first_forward_pos = first_pos;
-		} else {
-			first_forward_pos = 0;
-		}		
-		for( strus::Index pos = first_forward_pos; pos <= first_forward_pos + m_N; pos++ ) {
+			// skip in forward index to the right document (all feature
+			// types to be added to summary and the sentence marker iterator)
 			for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
-				if( (*it)->skipPos( pos ) == pos ) {
-					std::string w = (*it)->fetch( );
-					if( pos == nextMarkPos ) {
-						std::stringstream ss;				
-						ss << boost::format( m_mark ) % w;
-						elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
-						while( !positions.empty( ) && nextMarkPos == pos ) {
-							nextMarkPos = positions.top( );
-							positions.pop( );
+				(*it)->skipDoc( docno );
+			}
+			m_sentenceIndex->skipDoc( docno );
+			
+			// iterate the whole forward index for sentences, count
+			// matching terms per candidate sentence			
+			std::vector<Candidate> candidates;
+			strus::Index startSentence = m_sentenceIndex->skipPos( 0 );
+			strus::Index endSentence = m_sentenceIndex->skipPos( 2 );
+			while( endSentence > startSentence ) {
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "SENTENCE " << docno << ", [" << startSentence << ", " << endSentence << ")" << std::endl;
+#endif
+				Candidate candidate;
+				candidate.start = startSentence;
+				candidate.end = endSentence;
+				candidate.hits = 0;
+				for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {	
+					if( (*itr)->skipDoc( docno ) == docno ) {
+						strus::Index pos = (*itr)->skipPos( startSentence );					
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "MATCH " << docno << " " << (*itr)->featureid( ) << " " << pos << std::endl;
+#endif
+						if( pos > 0 && pos < endSentence && pos >= startSentence ) {
+							candidate.hits++;
 						}
-					} else {
-						elems.push_back( strus::SummaryElement( "forward", w ) );
+					}
+				}
+				
+				if( candidate.hits > 0 ) {
+					candidates.push_back( candidate );
+				}
+				
+				startSentence = endSentence;
+				endSentence = m_sentenceIndex->skipPos( endSentence + 1 );
+			}			
+			
+			// sort candidates per nofMatches, startPos (preferring
+			// more hits in a sentence over less hits, preferring
+			// sentences in the beginning over sentences at the end)
+			std::sort( candidates.begin( ), candidates.end( ) );
+			unsigned int i = 1;
+			std::vector<Candidate> finalCandidates;
+			for( std::vector<Candidate>::const_iterator it = candidates.begin( ); it != candidates.end( ) && i <= m_nofSentences; it++, i++ ) {
+				finalCandidates.push_back( *it );
+			}
+			
+			// sort final candidates by start position (keeping order in
+			// document intact)
+			std::sort( finalCandidates.begin( ), finalCandidates.end( ), FinalSorter( ) );
+			
+			// iterate all candidates and keep at most N sentences
+			// per summary
+			for( std::vector<Candidate>::const_iterator it = finalCandidates.begin( ); it != finalCandidates.end( ); it++ ) {
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "CANDIDATE " << docno << ", [" << it->start << ", " << it->end << ") " << it->hits << std::endl;
+#endif
+
+				// remember all feature positions for the top N positions in the sentence
+				std::priority_queue< strus::Index, std::vector<strus::Index>, std::greater<strus::Index> > positions;
+				for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
+					if( (*itr)->skipDoc( docno ) == docno ) {
+						strus::Index idxPos = (*itr)->skipPos( it->start );
+						while( idxPos != 0 && idxPos <= it->end && idxPos - it->start < m_N ) {
+							positions.push( idxPos );
+#ifdef STRUS_LOWLEVEL_DEBUG
+							std::cout << "CANDIDATE_MATCHES " << docno << ", [" << it->start << ", " << it->end << ") " << idxPos << std::endl;
+#endif						
+							idxPos = (*itr)->skipPos( idxPos + 1 );
+						}
+					}
+				}
+
+				strus::Index nextMarkPos = -1;
+				if( !positions.empty( ) ) {
+					nextMarkPos = positions.top( );
+					positions.pop( );
+				}
+				for( strus::Index pos = it->start; pos < it->end && pos - it->start < m_N; pos++ ) {
+					for( std::vector<strus::ForwardIteratorInterface*>::iterator fit = m_forwardIndex.begin( ); fit != m_forwardIndex.end( ); fit++ ) {
+						if( (*fit)->skipPos( pos ) == pos ) {
+							std::string w = (*fit)->fetch( );
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "WORD " << docno << " " << w << " " << pos << " " << nextMarkPos << " " << std::endl;
+#endif
+							if( pos == nextMarkPos ) {
+								std::stringstream ss;				
+								ss << boost::format( m_mark ) % w;
+								elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
+								while( !positions.empty( ) && nextMarkPos == pos ) {
+									nextMarkPos = positions.top( );
+									positions.pop( );
+								}
+							} else {
+								elems.push_back( strus::SummaryElement( "forward", w ) );
+							}
+						}
+					}
+				}
+				
+				elems.push_back( strus::SummaryElement( "forward", "..." ) );
+			}
+
+		// simple algorithm, match N terms after first match or from
+		// the beginning of the document
+		} else {
+			// position all iterators of all matching features to the
+			// document and first position
+			strus::Index first_pos;
+			first_pos = 99999999;
+			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {				
+				if( (*itr)->skipDoc( docno ) == docno ) {
+					strus::Index idxPos = (*itr)->skipPos( 0 );
+					if( idxPos != 0 ) {
+						first_pos = std::min( first_pos, idxPos );
+					}
+				}
+			}
+
+			// remember all feature positions for the top N positions
+			std::priority_queue< strus::Index, std::vector<strus::Index>, std::greater<strus::Index> > positions;
+			for( std::vector<strus::PostingIteratorInterface *>::const_iterator itr = m_itrs.begin( ); itr != m_itrs.end( ); itr++ ) {
+				if( (*itr)->skipDoc( docno ) == docno ) {
+					strus::Index idxPos = first_pos;
+					while( idxPos != 0 && idxPos <= first_pos + m_N ) {
+						positions.push( idxPos );
+						idxPos = (*itr)->skipPos( idxPos + 1 );
+					}
+				}
+			}
+			
+			// skip in forward index to the right document
+			for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
+				(*it)->skipDoc( docno );
+			}
+
+			// iterate through forward index up to position N, if we have found
+			// a feature we must "highlight", we do so.
+			strus::Index nextMarkPos = -1;
+			if( !positions.empty( ) ) {
+				nextMarkPos = positions.top( );
+				positions.pop( );
+			}
+			strus::Index first_forward_pos;
+			if( m_start_first_match ) {
+				first_forward_pos = first_pos;
+			} else {
+				first_forward_pos = 0;
+			}		
+			for( strus::Index pos = first_forward_pos; pos <= first_forward_pos + m_N; pos++ ) {
+				for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
+					if( (*it)->skipPos( pos ) == pos ) {
+						std::string w = (*it)->fetch( );
+						if( pos == nextMarkPos ) {
+							std::stringstream ss;				
+							ss << boost::format( m_mark ) % w;
+							elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
+							while( !positions.empty( ) && nextMarkPos == pos ) {
+								nextMarkPos = positions.top( );
+								positions.pop( );
+							}
+						} else {
+							elems.push_back( strus::SummaryElement( "forward", w ) );
+						}
 					}
 				}
 			}
@@ -167,6 +315,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 			m_metadata = value;
 		} else if( boost::algorithm::iequals( name, "type" ) ) {
 			m_types.push_back( value );
+		} else if( boost::algorithm::iequals( name, "sentence" ) ) {
+			m_sentence = value;
 		} else if( boost::algorithm::iequals( name, "mark" ) ) {
 			m_mark = value;
 		} else {
@@ -180,6 +330,8 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 {
 	if( boost::algorithm::iequals( name, "N" ) ) {
 		m_N = (unsigned int)value;
+	} else if( boost::algorithm::iequals( name, "nof_sentences" ) ) {
+		m_nofSentences = (unsigned int)value;
 	} else if( boost::algorithm::iequals( name, "start_first_match" ) ) {
 		m_start_first_match = ( value.touint( ) > 0 );
 	} else if( boost::algorithm::iequals( name, "attribute" ) ) {		
@@ -200,7 +352,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_N, m_start_first_match, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_sentence, m_N, m_nofSentences, m_start_first_match, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test", *m_errorhnd, 0);
 }
@@ -222,6 +374,9 @@ strus::FunctionDescription SummarizerFunctionTest::getDescription( ) const
 		descr( strus::FunctionDescription::Parameter::Feature, "match", _TXT( "defines the query features to respect for summarizing"));
 		descr( strus::FunctionDescription::Parameter::Numeric, "N", _TXT( "maximal size of the abstract" ) );
 		descr( strus::FunctionDescription::Parameter::String, "mark", _TXT( "how to mark a hit in boost format syntax with one parameter %1%" ) );
+		descr( strus::FunctionDescription::Parameter::String, "type", _TXT( "feature type in forward index to be used to produce summaries (can appear multiple times)" ) );
+		descr( strus::FunctionDescription::Parameter::String, "sentence", _TXT( "feature type in forward index to be used to segment the document (e. g. sentences)" ) );
+		descr( strus::FunctionDescription::Parameter::Numeric, "nof_sentences", _TXT( "maximal size of the abstract in sentences" ) );
 		descr( strus::FunctionDescription::Parameter::Numeric, "start_first_match", _TXT( "start with abstracting at the first match = 1 ( default: first position of document = 0)" ) );
 		return descr;
 	}
