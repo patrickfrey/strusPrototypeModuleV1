@@ -36,6 +36,7 @@ const unsigned int TEST_DEFAULT_N = 50;
 const std::string TEST_DEFAULT_MARK = "<b>%1%</b>";
 const bool TEST_DEFAULT_START_FIRST_MATCH = false;
 const unsigned int TEST_DEFAULT_NOF_SENTENCES = 3;
+const bool TEST_DEFAULT_ADD_DOTS = false;
 
 namespace test {
 
@@ -53,6 +54,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const std::vector<std::string> &types,
 			const std::string &sentence,
 			const unsigned int N,
+			const bool add_dots,
 			const unsigned int nof_sentences,
 			const bool start_first_match,
 			const std::string mark,
@@ -64,6 +66,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			m_types( types ),
 			m_sentence( sentence ),
 			m_N( N ),
+			m_add_dots( add_dots ),
 			m_nofSentences( nof_sentences),
 			m_start_first_match( start_first_match ),
 			m_mark( mark ),
@@ -120,6 +123,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		std::vector<std::string> m_types;
 		std::string m_sentence;
 		strus::Index m_N;
+		bool m_add_dots;
 		unsigned int m_nofSentences;
 		bool m_start_first_match;
 		std::string m_mark;
@@ -139,6 +143,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		std::vector<std::string> m_types;
 		std::string m_sentence;
 		unsigned int m_N;
+		bool m_add_dots;
 		unsigned int m_nofSentences;
 		bool m_start_first_match;
 		std::string m_mark;
@@ -146,7 +151,8 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 	public:
 	
 		explicit SummarizerFunctionInstanceTest( strus::ErrorBufferInterface *errorhnd_ )
-			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), m_nofSentences( TEST_DEFAULT_NOF_SENTENCES ),
+			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), 
+			m_add_dots( TEST_DEFAULT_ADD_DOTS ), m_nofSentences( TEST_DEFAULT_NOF_SENTENCES ),
 			m_start_first_match( TEST_DEFAULT_START_FIRST_MATCH ), m_mark( TEST_DEFAULT_MARK ) { }
 
 		virtual ~SummarizerFunctionInstanceTest( ) { }

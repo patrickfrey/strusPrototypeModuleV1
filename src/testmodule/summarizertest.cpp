@@ -210,7 +210,9 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 					}
 				}
 				
-				elems.push_back( strus::SummaryElement( "forward", "..." ) );
+				if( m_add_dots ) {
+					elems.push_back( strus::SummaryElement( "forward", "..." ) );
+				}
 			}
 
 		// simple algorithm, match N terms after first match or from
@@ -277,6 +279,9 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 					}
 				}
 			}
+			if( m_add_dots ) {
+				elems.push_back( strus::SummaryElement( "forward", "..." ) );
+			}
 		}
 	
 		return elems;
@@ -297,6 +302,9 @@ std::string SummarizerFunctionInstanceTest::tostring() const
 			rt << *it;
 		}
 		rt << "), N=" << m_N;
+		rt << ", nof_sentences=" << m_nofSentences;
+		rt << ", start_first_match=" << m_start_first_match;
+		rt << ", add_dots=" << m_add_dots;
 		return rt.str();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error mapping '%s' summarizer function to string: %s" ), "test", *m_errorhnd, std::string( ) );
@@ -334,6 +342,8 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 		m_nofSentences = (unsigned int)value;
 	} else if( boost::algorithm::iequals( name, "start_first_match" ) ) {
 		m_start_first_match = ( value.touint( ) > 0 );
+	} else if( boost::algorithm::iequals( name, "add_dots" ) ) {
+		m_add_dots = ( value.touint( ) > 0 );
 	} else if( boost::algorithm::iequals( name, "attribute" ) ) {		
 		m_errorhnd->report( _TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test" );
 	} else {
@@ -352,7 +362,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_sentence, m_N, m_nofSentences, m_start_first_match, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_sentence, m_N, m_add_dots, m_nofSentences, m_start_first_match, m_mark, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test", *m_errorhnd, 0);
 }
@@ -378,6 +388,7 @@ strus::FunctionDescription SummarizerFunctionTest::getDescription( ) const
 		descr( strus::FunctionDescription::Parameter::String, "sentence", _TXT( "feature type in forward index to be used to segment the document (e. g. sentences)" ) );
 		descr( strus::FunctionDescription::Parameter::Numeric, "nof_sentences", _TXT( "maximal size of the abstract in sentences" ) );
 		descr( strus::FunctionDescription::Parameter::Numeric, "start_first_match", _TXT( "start with abstracting at the first match = 1 ( default: first position of document = 0)" ) );
+		descr( strus::FunctionDescription::Parameter::Numeric, "add_dots", _TXT( "add ... when ommitting text (1 = true, 0 = false, default: 0)" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating summarizer function description for '%s': %s" ), "test", *m_errorhnd,
