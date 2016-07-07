@@ -93,7 +93,7 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 		// iterate through forward index up to position N, if we have found
 		// a feature we must "highlight", we do so.
 		strus::Index lastPos = -1;
-		while( !positions.empty( ) ) {
+		do {
 			strus::Index pos = positions.top( );
 			positions.pop( );
 			while( !positions.empty( ) && pos == lastPos ) {
@@ -105,16 +105,16 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 			}
 			lastPos = pos;
 			if( m_forwardIndex->skipPos( pos ) == pos ) {
-#ifdef LOWLEVEL_DEBUG
-				std::cout << "DEBUG: forward position skip " << pos << std::endl;
-#endif
 				std::string w = m_forwardIndex->fetch( );
+#ifdef LOWLEVEL_DEBUG
+				std::cout << "DEBUG: forward position skip " << pos << " " << w << std::endl;
+#endif
 				if( candidates.find( w ) == candidates.end( ) ) {
 					elems.push_back( strus::SummaryElement( "forward", w ) );
 					candidates.insert( w );				
 				}
 			}
-		}
+		} while( !positions.empty( ) );
 			
 		return elems;
 	}
