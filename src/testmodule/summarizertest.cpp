@@ -259,7 +259,7 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 			if( m_start_first_match ) {
 				first_forward_pos = first_pos;
 			} else {
-				first_forward_pos = 0;
+				first_forward_pos = 1;
 			}		
 			for( strus::Index pos = first_forward_pos; pos <= first_forward_pos + m_N; pos++ ) {
 				for( std::vector<strus::ForwardIteratorInterface*>::iterator it = m_forwardIndex.begin( ); it != m_forwardIndex.end( ); it++ ) {
