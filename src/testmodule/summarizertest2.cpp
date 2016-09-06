@@ -16,6 +16,8 @@
 
 #include "strus/private/errorUtils.hpp"
 
+#include "strus/constants.hpp"
+
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
@@ -109,9 +111,15 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 #ifdef LOWLEVEL_DEBUG
 				std::cout << "DEBUG: forward position skip " << pos << " " << w << std::endl;
 #endif
-				if( candidates.find( w ) == candidates.end( ) ) {
-					elems.push_back( strus::SummaryElement( "forward", w ) );
-					candidates.insert( w );				
+				if( (unsigned int)pos >= strus::Constants::storage_max_position_info( ) ) {
+#ifdef LOWLEVEL_DEBUG
+					std::cout << "DEBUG: ignoring illegal token on max_position " << pos << " " << w << std::endl;
+#endif
+				} else {
+					if( candidates.find( w ) == candidates.end( ) ) {
+						elems.push_back( strus::SummaryElement( "forward", w ) );
+						candidates.insert( w );				
+					}
 				}
 			}
 		} while( !positions.empty( ) );
