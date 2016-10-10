@@ -16,6 +16,7 @@
 #include "summarizertest.hpp"
 #include "summarizertest2.hpp"
 #include "weightingFormula.hpp"
+#include "weightingMetadata2.hpp"
 
 strus::PostingJoinOperatorInterface *createPostingIteratorTest_test( strus::ErrorBufferInterface *errorhnd )
 {
@@ -39,10 +40,16 @@ strus::WeightingFunctionInterface *createWeightingFunction_formula( strus::Error
 	return new strus::WeightingFunctionFormula( errorhnd );
 }
 
+strus::WeightingFunctionInterface *createWeightingFunction_metadata2( strus::ErrorBufferInterface *errorhnd )
+{
+	return new strus::WeightingFunctionMetadata2( errorhnd );
+}
+
 static const strus::WeightingFunctionConstructor weightingFunctions[] =
 {
 	{ "test", createWeightingFunction_test },
 	{ "formula_test", createWeightingFunction_formula },
+	{ "metadata2", createWeightingFunction_metadata2 },
 	{ 0, 0 }
 };
 
