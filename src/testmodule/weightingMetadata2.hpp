@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #ifndef _STRUS_WEIGHTING_METADATA2_HPP_INCLUDED
-#define _STRUS_WEIGHTING_METADATA_HPP_INCLUDED
+#define _STRUS_WEIGHTING_METADATA2_HPP_INCLUDED
 #include "strus/weightingFunctionInterface.hpp"
 #include "strus/weightingFunctionInstanceInterface.hpp"
 #include "strus/weightingFunctionContextInterface.hpp"
