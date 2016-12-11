@@ -21,6 +21,8 @@ find_strus_package( analyzer )
 find_strus_package( module )
 
 configure_file( "${PROJECT_SOURCE_DIR}/dist/obs/deploy_to_obs.sh.in"  "${PROJECT_SOURCE_DIR}/dist/obs/deploy_to_obs.sh"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/dist/archlinux/PKGBUILD.in"  "${PROJECT_SOURCE_DIR}/dist/archlinux/PKGBUILD"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/dist/obs/strusprototypemodulev1.dsc.in"  "${PROJECT_SOURCE_DIR}/dist/obs/strusprototypemodulev1.dsc"  @ONLY )
 configure_file( "${PROJECT_SOURCE_DIR}/dist/redhat/strusprototypemodulev1.spec.in"  "${PROJECT_SOURCE_DIR}/dist/redhat/strusprototypemodulev1.spec"  @ONLY )
 
 set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )

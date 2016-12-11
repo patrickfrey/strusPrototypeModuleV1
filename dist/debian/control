@@ -1,0 +1,15 @@
+Source: strusprototypemodulev1
+Section: libs
+Priority: optional
+Maintainer: Andreas Baumann <andreas.baumann@eurospider.com>
+Build-Depends: debhelper (>= 4.1.16), cmake,
+ libboost-dev, libboost-thread-dev, libboost-system-dev,
+ libboost-date-time-dev, strusbase-dev, strus-dev, strusanalyzer-dev, 
+ strustrace-dev, strusmodule-dev
+Standards-Version: 3.8.3
+Homepage: http://project-strus.net
+
+Package: strusprototypemodulev1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Example implementations of query methods, summarizers, etc.
