@@ -159,6 +159,7 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 
 		virtual void addStringParameter( const std::string& name, const std::string& value );
 		virtual void addNumericParameter( const std::string& name, const strus::NumericVariant& value );
+		virtual void defineResultName( const std::string& resultname, const std::string& itemname);
 
 		virtual strus::SummarizerFunctionContextInterface* createFunctionContext(
 			const strus::StorageClientInterface* storage_,

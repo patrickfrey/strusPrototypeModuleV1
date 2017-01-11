@@ -167,6 +167,11 @@ void SummarizerFunctionInstanceTest2::addNumericParameter( const std::string& na
 	}
 }
 
+void SummarizerFunctionInstanceTest2::defineResultName(const std::string& resultname, const std::string& itemname )
+{
+	throw strus::runtime_error( _TXT("defineResultName not impemented and called with itemname '%s"), itemname.c_str());
+}
+
 strus::SummarizerFunctionContextInterface* SummarizerFunctionInstanceTest2::createFunctionContext(
 			const strus::StorageClientInterface* storage_,
 			strus::MetaDataReaderInterface* metadata,
