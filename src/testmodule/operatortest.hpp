@@ -41,6 +41,8 @@ class TestPostingIterator : public strus::PostingIteratorInterface
 		virtual strus::Index docno( ) const;
 		
 		virtual strus::Index posno( ) const;
+
+		virtual strus::Index length( ) const;
 };
 
 class PostingJoinOperatorTest : public strus::PostingJoinOperatorInterface

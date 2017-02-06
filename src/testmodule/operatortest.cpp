@@ -58,6 +58,12 @@ strus::Index TestPostingIterator::posno( ) const
 	return 0;
 }
 
+strus::Index TestPostingIterator::length() const
+{
+	// TODO: length
+	return 1;
+}
+
 strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 			const std::vector<strus::Reference<strus::PostingIteratorInterface> > &itrs,
 			int range,

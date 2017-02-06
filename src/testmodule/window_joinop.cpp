@@ -276,6 +276,13 @@ public:
 	{
 		return m_posno;
 	}
+	
+	virtual Index length() const
+	{
+		// TODO: length
+		return 1;
+	}
+	
 
 private:
 	// Current document:
