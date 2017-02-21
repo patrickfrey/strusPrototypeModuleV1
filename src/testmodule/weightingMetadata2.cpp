@@ -48,6 +48,11 @@ double WeightingFunctionContextMetadata2::call( const Index& docno)
 		m_weight2 * (double)m_metadata->getValue( m_elementHandle2) );
 }
 
+std::string WeightingFunctionContextMetadata2::debugCall( const strus::Index& docno)
+{
+	return "n/a";
+}
+
 static NumericVariant parameterValue( const std::string& name, const std::string& value)
 {
 	NumericVariant rt;

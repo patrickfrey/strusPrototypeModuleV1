@@ -129,6 +129,11 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error fetching '%s' summary: %s" ), "test", *m_errorhnd, std::vector<strus::SummaryElement>( ) );
 }
 
+std::string SummarizerFunctionContextTest2::debugCall( const strus::Index& docno)
+{
+	return "n/a";
+}
+
 std::string SummarizerFunctionInstanceTest2::tostring() const
 {
 	try

@@ -113,6 +113,8 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const strus::TermStatistics &);
 		
 		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
+
+		virtual std::string debugCall( const strus::Index& docno);
 	
 	private:
 

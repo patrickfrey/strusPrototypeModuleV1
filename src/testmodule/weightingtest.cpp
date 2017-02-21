@@ -41,6 +41,11 @@ double WeightingFunctionContextTest::call( const strus::Index &docno )
 	return m_param;
 }
 
+std::string WeightingFunctionContextTest::debugCall( const strus::Index& docno)
+{
+	return "n/a";
+}
+
 std::string WeightingFunctionInstanceTest::tostring() const
 {
 	try {

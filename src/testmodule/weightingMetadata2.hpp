@@ -49,6 +49,8 @@ public:
 
 	virtual double call( const Index& docno);
 
+	virtual std::string debugCall( const strus::Index& docno);
+
 private:
 	MetaDataReaderInterface* m_metadata;
 	Index m_elementHandle1;

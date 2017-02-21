@@ -267,6 +267,10 @@ double WeightingFunctionContextFormula::call( const Index& docno)
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error calling weighting function '%s': %s"), "formula", *m_errorhnd, 0.0);
 }
 
+std::string WeightingFunctionContextFormula::debugCall( const strus::Index& docno)
+{
+	return "n/a";
+}
 
 WeightingFunctionContextInterface* WeightingFunctionInstanceFormula::createFunctionContext(
 		const StorageClientInterface* storage_,
