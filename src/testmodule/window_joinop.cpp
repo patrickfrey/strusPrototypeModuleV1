@@ -337,15 +337,13 @@ public:
 		CATCH_ERROR_MAP_RETURN( *m_errorhnd, 0)
 	}
 
-
 	// Return the Description of the operator for user help and introspection:
 	virtual Description getDescription() const
 	{
 		try
 		{
-			return Description( 
-				"iterator on windows of a maximum size (range) "
-				"containing a defined subset of features (cardinality)");
+			return Description( "minwin",
+				"iterator on windows of a maximum size (range) containing a defined subset of features (cardinality)");
 		}
 		CATCH_ERROR_MAP_RETURN( *m_errorhnd, Description())
 	}

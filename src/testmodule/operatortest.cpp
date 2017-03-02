@@ -93,7 +93,7 @@ strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 strus::PostingJoinOperatorInterface::Description PostingJoinOperatorTest::getDescription( ) const
 {
 	try {
-		strus::PostingJoinOperatorInterface::Description descr( _TXT( "Demonstrating how to implement a 'test' posting join operator" ) );
+		strus::PostingJoinOperatorInterface::Description descr( "test", _TXT( "Demonstrating how to implement a 'test' posting join operator" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating posting join operator description for '%s': %s" ), "test", *m_errorhnd,
