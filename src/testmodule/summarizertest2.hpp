@@ -33,6 +33,7 @@
 #include <vector>
 
 const unsigned int TEST2_DEFAULT_N = 50;
+const std::string TEST2_DEFAULT_RESULTNAME = "forward";
 
 namespace test {
 
@@ -45,8 +46,9 @@ class SummarizerFunctionContextTest2 : public strus::SummarizerFunctionContextIn
 			const strus::StorageClientInterface *storage,
 			const std::string &type,
 			const strus::Index N,
+			const std::string &resultname,
 			strus::ErrorBufferInterface* errorhnd )
-			: m_N( N ),
+			: m_N( N ), m_resultname( resultname ),
 			m_errorhnd( errorhnd ) { 
 				
 				m_forwardIndex = storage->createForwardIterator( type );
@@ -65,10 +67,13 @@ class SummarizerFunctionContextTest2 : public strus::SummarizerFunctionContextIn
 			const strus::TermStatistics &);
 		
 		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
+
+		virtual std::string debugCall( const strus::Index& docno);
 	
 	private:
 
 		strus::Index m_N;
+		std::string m_resultname;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
 		strus::ForwardIteratorInterface *m_forwardIndex;
@@ -81,11 +86,13 @@ class SummarizerFunctionInstanceTest2 : public strus::SummarizerFunctionInstance
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::string m_type;
 		unsigned int m_N;
+		std::string m_resultname;
 
 	public:
 	
 		explicit SummarizerFunctionInstanceTest2( strus::ErrorBufferInterface *errorhnd_ )
-			: m_errorhnd( errorhnd_ ), m_N( TEST2_DEFAULT_N ) { }
+			: m_errorhnd( errorhnd_ ), m_N( TEST2_DEFAULT_N ),
+			m_resultname( TEST2_DEFAULT_RESULTNAME ) { }
 
 		virtual ~SummarizerFunctionInstanceTest2( ) { }
 

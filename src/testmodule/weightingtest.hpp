@@ -44,6 +44,8 @@ class WeightingFunctionContextTest : public strus::WeightingFunctionContextInter
 			const strus::TermStatistics &stats );
 
 		virtual double call( const strus::Index &docno );
+
+		virtual std::string debugCall( const strus::Index& docno);
 	
 	private:
 

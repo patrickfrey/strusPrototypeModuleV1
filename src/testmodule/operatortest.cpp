@@ -58,6 +58,12 @@ strus::Index TestPostingIterator::posno( ) const
 	return 0;
 }
 
+strus::Index TestPostingIterator::length() const
+{
+	// TODO: length
+	return 1;
+}
+
 strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 			const std::vector<strus::Reference<strus::PostingIteratorInterface> > &itrs,
 			int range,
@@ -87,7 +93,7 @@ strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 strus::PostingJoinOperatorInterface::Description PostingJoinOperatorTest::getDescription( ) const
 {
 	try {
-		strus::PostingJoinOperatorInterface::Description descr( _TXT( "Demonstrating how to implement a 'test' posting join operator" ) );
+		strus::PostingJoinOperatorInterface::Description descr( "test", _TXT( "Demonstrating how to implement a 'test' posting join operator" ) );
 		return descr;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT( "error creating posting join operator description for '%s': %s" ), "test", *m_errorhnd,

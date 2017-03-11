@@ -132,6 +132,8 @@ public:
 
 	virtual double call( const Index& docno);
 
+	virtual std::string debugCall( const strus::Index& docno);
+
 private:
 	friend class FunctionMap;
 	typedef std::vector<Feature> FeatureVector;
