@@ -37,6 +37,7 @@ const std::string TEST_DEFAULT_MARK = "<b>%1%</b>";
 const bool TEST_DEFAULT_START_FIRST_MATCH = false;
 const unsigned int TEST_DEFAULT_NOF_SENTENCES = 3;
 const bool TEST_DEFAULT_ADD_DOTS = false;
+const std::string TEST_DEFAULT_RESULTNAME = "forward";
 
 namespace test {
 
@@ -57,7 +58,8 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const bool add_dots,
 			const unsigned int nof_sentences,
 			const bool start_first_match,
-			const std::string mark,
+			const std::string &mark,
+			const std::string &resultname,
 			strus::ErrorBufferInterface* errorhnd )
 			: m_attribreader( attribreader ), 
 			m_metadatareader( metadatareader ),
@@ -70,6 +72,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			m_nofSentences( nof_sentences),
 			m_start_first_match( start_first_match ),
 			m_mark( mark ),
+			m_resultname( resultname ),
 			m_errorhnd( errorhnd ),
 			m_itrs( ),
 			m_forwardIndex( ),
@@ -129,6 +132,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 		unsigned int m_nofSentences;
 		bool m_start_first_match;
 		std::string m_mark;
+		std::string m_resultname;
 		strus::ErrorBufferInterface *m_errorhnd;
 		std::vector<strus::PostingIteratorInterface*> m_itrs;
 		std::vector<strus::ForwardIteratorInterface*> m_forwardIndex;
@@ -149,13 +153,15 @@ class SummarizerFunctionInstanceTest : public strus::SummarizerFunctionInstanceI
 		unsigned int m_nofSentences;
 		bool m_start_first_match;
 		std::string m_mark;
+		std::string m_resultname;
 
 	public:
 	
 		explicit SummarizerFunctionInstanceTest( strus::ErrorBufferInterface *errorhnd_ )
 			: m_errorhnd( errorhnd_ ), m_N( TEST_DEFAULT_N ), 
 			m_add_dots( TEST_DEFAULT_ADD_DOTS ), m_nofSentences( TEST_DEFAULT_NOF_SENTENCES ),
-			m_start_first_match( TEST_DEFAULT_START_FIRST_MATCH ), m_mark( TEST_DEFAULT_MARK ) { }
+			m_start_first_match( TEST_DEFAULT_START_FIRST_MATCH ), m_mark( TEST_DEFAULT_MARK ),
+			m_resultname( TEST_DEFAULT_RESULTNAME ) { }
 
 		virtual ~SummarizerFunctionInstanceTest( ) { }
 

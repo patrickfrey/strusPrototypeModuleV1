@@ -117,7 +117,7 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest2::getSummary( c
 #endif
 				} else {
 					if( candidates.find( w ) == candidates.end( ) ) {
-						elems.push_back( strus::SummaryElement( "forward", w ) );
+						elems.push_back( strus::SummaryElement( m_resultname, w ) );
 						candidates.insert( w );				
 					}
 				}
@@ -174,7 +174,18 @@ void SummarizerFunctionInstanceTest2::addNumericParameter( const std::string& na
 
 void SummarizerFunctionInstanceTest2::defineResultName(const std::string& resultname, const std::string& itemname )
 {
-	throw strus::runtime_error( _TXT("defineResultName not impemented and called with itemname '%s"), itemname.c_str());
+	try
+	{
+		if (boost::algorithm::iequals( itemname, "resultname"))
+		{
+			m_resultname = resultname;
+		}
+		else
+		{
+			throw strus::runtime_error( _TXT("unknown item name '%s"), itemname.c_str());
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining result name of '%s' summarizer: %s"), "test2", *m_errorhnd);
 }
 
 strus::SummarizerFunctionContextInterface* SummarizerFunctionInstanceTest2::createFunctionContext(
@@ -183,7 +194,7 @@ strus::SummarizerFunctionContextInterface* SummarizerFunctionInstanceTest2::crea
 			const strus::GlobalStatistics& stats ) const
 {
 	try {
-		return new SummarizerFunctionContextTest2( storage_, m_type, m_N, m_errorhnd );
+		return new SummarizerFunctionContextTest2( storage_, m_type, m_N, m_resultname, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test2", *m_errorhnd, 0);
 }

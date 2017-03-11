@@ -198,20 +198,20 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 							if( pos == nextMarkPos ) {
 								std::stringstream ss;				
 								ss << boost::format( m_mark ) % w;
-								elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
+								elems.push_back( strus::SummaryElement( m_resultname, ss.str( ) ) );
 								while( !positions.empty( ) && nextMarkPos == pos ) {
 									nextMarkPos = positions.top( );
 									positions.pop( );
 								}
 							} else {
-								elems.push_back( strus::SummaryElement( "forward", w ) );
+								elems.push_back( strus::SummaryElement( m_resultname, w ) );
 							}
 						}
 					}
 				}
 				
 				if( m_add_dots ) {
-					elems.push_back( strus::SummaryElement( "forward", "..." ) );
+					elems.push_back( strus::SummaryElement( m_resultname, "..." ) );
 				}
 			}
 
@@ -268,19 +268,19 @@ std::vector<strus::SummaryElement> SummarizerFunctionContextTest::getSummary( co
 						if( pos == nextMarkPos ) {
 							std::stringstream ss;				
 							ss << boost::format( m_mark ) % w;
-							elems.push_back( strus::SummaryElement( "forward", ss.str( ) ) );
+							elems.push_back( strus::SummaryElement( m_resultname, ss.str( ) ) );
 							while( !positions.empty( ) && nextMarkPos == pos ) {
 								nextMarkPos = positions.top( );
 								positions.pop( );
 							}
 						} else {
-							elems.push_back( strus::SummaryElement( "forward", w ) );
+							elems.push_back( strus::SummaryElement( m_resultname, w ) );
 						}
 					}
 				}
 			}
 			if( m_add_dots ) {
-				elems.push_back( strus::SummaryElement( "forward", "..." ) );
+				elems.push_back( strus::SummaryElement( m_resultname, "..." ) );
 			}
 		}
 	
@@ -358,7 +358,18 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 
 void SummarizerFunctionInstanceTest::defineResultName(const std::string& resultname, const std::string& itemname )
 {
-	throw strus::runtime_error( _TXT("defineResultName not impemented and called with itemname '%s"), itemname.c_str());
+	try
+	{
+		if (boost::algorithm::iequals( itemname, "resultname"))
+		{
+			m_resultname = resultname;
+		}
+		else
+		{
+			throw strus::runtime_error( _TXT("unknown item name '%s"), itemname.c_str());
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining result name of '%s' summarizer: %s"), "test", *m_errorhnd);
 }
 
 strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::createFunctionContext( 
@@ -372,7 +383,7 @@ strus::SummarizerFunctionContextInterface *SummarizerFunctionInstanceTest::creat
 			m_errorhnd->explain( _TXT( "error creating context of 'test' summarizer: %s" ) );
 			return 0;
 		}
-		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_sentence, m_N, m_add_dots, m_nofSentences, m_start_first_match, m_mark, m_errorhnd );
+		return new SummarizerFunctionContextTest( storage, attributeReader, metadata, m_attribute, m_metadata, m_types, m_sentence, m_N, m_add_dots, m_nofSentences, m_start_first_match, m_mark, m_resultname, m_errorhnd );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' summarizer: %s"), "test", *m_errorhnd, 0);
 }
