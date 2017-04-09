@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR )
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR )
 
 # must be done BEFORE project in order to work!
 include(cmake/install_prefix.cmake)
@@ -9,13 +9,16 @@ set( STRUS_PROTOTYPE_MODULE_V1_MINOR_VERSION 0 )
 set( STRUS_PROTOTYPE_MODULE_V1_PATCH_VERSION 3 )
 set( STRUS_PROTOTYPE_MODULE_V1_VERSION ${STRUS_PROTOTYPE_MODULE_V1_MAJOR_VERSION}.${STRUS_PROTOTYPE_MODULE_V1_MINOR_VERSION}.${STRUS_PROTOTYPE_MODULE_V1_PATCH_VERSION} )
 
+if(NOT STRUS_ALL)
 include( cmake/dist.cmake )
 include( cmake/LinuxDistribution.cmake )
 include( cmake/build_rules.cmake )
 include( cmake/boost.cmake)
 include( cmake/intl.cmake )
 include( cmake/find_strus_package.cmake )
+endif()
 
+find_strus_package( base )
 find_strus_package( core )
 find_strus_package( analyzer )
 find_strus_package( module )
@@ -33,7 +36,11 @@ enable_testing()
 # Subdirectories:
 add_subdirectory( src )
   
+if(NOT STRUS_ALL)
 include( cmake/report_build_settings.cmake )
+endif()
 
+if(NOT STRUS_ALL)
 include( cmake/standard_targets.cmake )
+endif()
 
