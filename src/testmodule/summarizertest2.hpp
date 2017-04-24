@@ -65,6 +65,10 @@ class SummarizerFunctionContextTest2 : public strus::SummarizerFunctionContextIn
 			const std::vector<strus::SummarizationVariable> &,
 			double /*weight*/,
 			const strus::TermStatistics &);
+
+		virtual void setVariableValue( const std::string& name, double value) {
+			m_errorhnd->report( _TXT("no variables known for function '%s'"), "match");
+		}
 		
 		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
 
@@ -99,6 +103,11 @@ class SummarizerFunctionInstanceTest2 : public strus::SummarizerFunctionInstance
 		virtual void addStringParameter( const std::string& name, const std::string& value );
 		virtual void addNumericParameter( const std::string& name, const strus::NumericVariant& value );
 		virtual void defineResultName( const std::string& resultname, const std::string& itemname);
+
+		virtual std::vector<std::string> getVariables() const
+		{
+			return std::vector<std::string>();
+		}
 
 		virtual strus::SummarizerFunctionContextInterface* createFunctionContext(
 			const strus::StorageClientInterface* storage_,

@@ -248,6 +248,11 @@ void WeightingFunctionContextFormula::addWeightingFeature(
 	CATCH_ERROR_ARG1_MAP( _TXT("error adding feature to weighting function '%s': %s"), "formula", *m_errorhnd);
 }
 
+void WeightingFunctionContextFormula::setVariableValue( const std::string& name, double value)
+{
+	m_errorhnd->report( _TXT("no variables known for function '%s'"), "formula");
+}
+
 double WeightingFunctionContextFormula::call( const Index& docno)
 {
 	std::vector<FeatureVector>::iterator vi = m_featar.begin(), ve = m_featar.end();

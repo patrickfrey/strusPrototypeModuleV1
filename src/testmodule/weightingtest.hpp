@@ -43,6 +43,8 @@ class WeightingFunctionContextTest : public strus::WeightingFunctionContextInter
 			double weight,
 			const strus::TermStatistics &stats );
 
+		virtual void setVariableValue( const std::string& name, double value);
+
 		virtual double call( const strus::Index &docno );
 
 		virtual std::string debugCall( const strus::Index& docno);
@@ -72,6 +74,8 @@ class WeightingFunctionInstanceTest : public strus::WeightingFunctionInstanceInt
 
 		virtual void addStringParameter( const std::string& name, const std::string& value );
 		virtual void addNumericParameter( const std::string& name, const strus::NumericVariant& value );
+
+		virtual std::vector<std::string> getVariables() const;
 
 		virtual strus::WeightingFunctionContextInterface* createFunctionContext(
 			const strus::StorageClientInterface* storage_,

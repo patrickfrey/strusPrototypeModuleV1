@@ -41,6 +41,11 @@ void WeightingFunctionContextMetadata2::addWeightingFeature(
 	m_errorhnd->report( _TXT("passing feature parameter to weighting function '%s' that has no feature parameters"), "metadata2");
 }
 
+void WeightingFunctionContextMetadata2::setVariableValue( const std::string& name, double value)
+{
+	m_errorhnd->report( _TXT("no variables known for function '%s'"), "metadata2");
+}
+
 double WeightingFunctionContextMetadata2::call( const Index& docno)
 {
 	m_metadata->skipDoc( docno);

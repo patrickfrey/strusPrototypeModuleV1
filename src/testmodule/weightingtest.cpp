@@ -34,6 +34,11 @@ void WeightingFunctionContextTest::addWeightingFeature( const std::string& name,
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding weighting feature to '%s' weighting: %s"), "test", *m_errorhnd );
 }
 
+void WeightingFunctionContextTest::setVariableValue( const std::string&, double)
+{
+	m_errorhnd->report( _TXT("no variables known for function '%s'"), "test");
+}
+
 double WeightingFunctionContextTest::call( const strus::Index &docno )
 {
 	// TODO: the weight is always a constant no mather whether the document
@@ -75,6 +80,11 @@ void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name
 	} else {
 		m_errorhnd->report( _TXT( "unknown '%s' numeric weighting function parameter '%s'" ), "test", name.c_str( ) );
 	}
+}
+
+std::vector<std::string> WeightingFunctionInstanceTest::getVariables() const
+{
+	return std::vector<std::string>();
 }
 
 strus::WeightingFunctionContextInterface *WeightingFunctionInstanceTest::createFunctionContext( 
