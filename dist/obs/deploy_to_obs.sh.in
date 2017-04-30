@@ -2,7 +2,7 @@
 
 PACKAGE_NAME=strusprototypemodulev1
 PACKAGE_VERSION=@STRUS_PROTOTYPE_MODULE_V1_VERSION@
-OSC_HOME=$HOME/home:andreas_baumann/$PACKAGE_NAME
+OSC_HOME=$HOME/home:PatrickFrey/$PACKAGE_NAME
 
 TMPDIR=/tmp
 
