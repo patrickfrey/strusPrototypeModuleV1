@@ -38,12 +38,14 @@ void WeightingFunctionContextMetadata2::addWeightingFeature(
 		double,
 		const TermStatistics&)
 {
-	m_errorhnd->report( _TXT("passing feature parameter to weighting function '%s' that has no feature parameters"), "metadata2");
+	m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+				_TXT("passing feature parameter to weighting function '%s' that has no feature parameters"), "metadata2");
 }
 
 void WeightingFunctionContextMetadata2::setVariableValue( const std::string& name, double value)
 {
-	m_errorhnd->report( _TXT("no variables known for function '%s'"), "metadata2");
+	m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+				_TXT("no variables known for function '%s'"), "metadata2");
 }
 
 double WeightingFunctionContextMetadata2::call( const Index& docno)
@@ -103,7 +105,8 @@ void WeightingFunctionInstanceMetadata2::addNumericParameter( const std::string&
 		}
 		else
 		{
-			m_errorhnd->report( _TXT("unknown '%s' weighting function parameter '%s'"), "metadata2", name.c_str());
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+						_TXT("unknown '%s' weighting function parameter '%s'"), "metadata2", name.c_str());
 		}
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error adding numeric parameter to weighting function '%s': %s"), "metadata2", *m_errorhnd);
@@ -118,11 +121,13 @@ WeightingFunctionContextInterface* WeightingFunctionInstanceMetadata2::createFun
 	{
 		if (m_elementName1.empty())
 		{
-			m_errorhnd->report( _TXT("undefined '%s' weighting function parameter '%s'"), "metadata2", "name1");
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseIncompleteRequest),
+						_TXT("undefined '%s' weighting function parameter '%s'"), "metadata2", "name1");
 		}
 		if (m_elementName2.empty())
 		{
-			m_errorhnd->report( _TXT("undefined '%s' weighting function parameter '%s'"), "metadata2", "name2");
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseIncompleteRequest),
+						_TXT("undefined '%s' weighting function parameter '%s'"), "metadata2", "name2");
 		}
 		return new WeightingFunctionContextMetadata2( metadata_, m_elementName1, m_elementName2, m_weight1, m_weight2, m_errorhnd);
 	}
