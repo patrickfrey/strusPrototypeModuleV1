@@ -24,12 +24,14 @@ using namespace strus;
 #define CATCH_ERROR_MAP_RETURN( HND, VALUE)\
 	catch( const std::bad_alloc&)\
 	{\
-		(HND).report( "out of memory in window iterator");\
+		(HND).report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseOutOfMem),\
+				"out of memory in window iterator");\
 		return VALUE;\
 	}\
 	catch( const std::runtime_error& err)\
 	{\
-		(HND).report( "error in minwin window iterator: %s", err.what());\
+		(HND).report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseRuntimeError),\
+				"error in minwin window iterator: %s", err.what());\
 		return VALUE;\
 	}\
 

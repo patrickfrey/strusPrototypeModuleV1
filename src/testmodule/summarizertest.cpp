@@ -40,7 +40,8 @@ void SummarizerFunctionContextTest::addSummarizationFeature( const std::string &
 		if( boost::algorithm::iequals( name, "match" ) ) {
 			m_itrs.push_back( itr );
 		} else {
-			m_errorhnd->report( _TXT( "unknown '%s' summarization feature '%s'" ), "test", name.c_str( ) );
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+						_TXT( "unknown '%s' summarization feature '%s'" ), "test", name.c_str( ) );
 		}
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding summarization feature to '%s' summarizer: %s" ), "test", *m_errorhnd );
@@ -320,7 +321,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 {
 	try {
 		if( boost::algorithm::iequals( name, "match" ) ) {
-			m_errorhnd->report( _TXT( "parameter '%s' for summarization function '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseInvalidArgument),
+						_TXT( "parameter '%s' for summarization function '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
 		}
 		if( boost::algorithm::iequals( name, "attribute" ) ) {
 			m_attribute = value;
@@ -333,7 +335,8 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 		} else if( boost::algorithm::iequals( name, "mark" ) ) {
 			m_mark = value;
 		} else {
-			m_errorhnd->report( _TXT( "unknown '%s' string summarization function parameter '%s'" ), "test", name.c_str( ) );
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+						_TXT( "unknown '%s' string summarization function parameter '%s'" ), "test", name.c_str( ) );
 		}
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' summarizer: %s"), "test", *m_errorhnd );
@@ -350,9 +353,11 @@ void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& nam
 	} else if( boost::algorithm::iequals( name, "add_dots" ) ) {
 		m_add_dots = ( value.touint( ) > 0 );
 	} else if( boost::algorithm::iequals( name, "attribute" ) ) {		
-		m_errorhnd->report( _TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test" );
+		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseInvalidArgument),
+					_TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test" );
 	} else {
-		m_errorhnd->report( _TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test", name.c_str( ) );
+		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+					_TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test", name.c_str( ) );
 	}
 }
 

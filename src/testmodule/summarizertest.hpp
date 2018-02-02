@@ -21,7 +21,7 @@
 #include "strus/forwardIteratorInterface.hpp"
 #include "strus/index.hpp"
 #include "strus/termStatistics.hpp"
-
+#include "strus/errorCodes.hpp"
 #include "strus/errorBufferInterface.hpp"
 
 #include "strus/private/errorUtils.hpp"
@@ -116,7 +116,8 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const strus::TermStatistics &);
 
 		virtual void setVariableValue( const std::string& name, double value) {
-			m_errorhnd->report( _TXT("no variables known for function '%s'"), "match");
+			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+						_TXT("no variables known for function '%s'"), "match");
 		}
 		
 		virtual std::vector<strus::SummaryElement> getSummary( const strus::Index &docno );
