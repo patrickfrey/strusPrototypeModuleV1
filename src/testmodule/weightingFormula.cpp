@@ -250,7 +250,7 @@ void WeightingFunctionContextFormula::addWeightingFeature(
 
 void WeightingFunctionContextFormula::setVariableValue( const std::string& name, double value)
 {
-	m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+	m_errorhnd->report( strus::ErrorCodeNotImplemented,
 				_TXT("no variables known for function '%s'"), "formula");
 }
 

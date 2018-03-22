@@ -13,6 +13,7 @@
 #include "strus/postingJoinOperatorInterface.hpp"
 #include "strus/postingIteratorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/errorCodes.hpp"
 #include <vector>
 
 using namespace strus;
@@ -24,13 +25,13 @@ using namespace strus;
 #define CATCH_ERROR_MAP_RETURN( HND, VALUE)\
 	catch( const std::bad_alloc&)\
 	{\
-		(HND).report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseOutOfMem),\
+		(HND).report( strus::ErrorCodeOutOfMem,\
 				"out of memory in window iterator");\
 		return VALUE;\
 	}\
 	catch( const std::runtime_error& err)\
 	{\
-		(HND).report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseRuntimeError),\
+		(HND).report( strus::ErrorCodeRuntimeError,\
 				"error in minwin window iterator: %s", err.what());\
 		return VALUE;\
 	}\
