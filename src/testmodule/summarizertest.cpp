@@ -345,9 +345,9 @@ void SummarizerFunctionInstanceTest::addStringParameter( const std::string& name
 void SummarizerFunctionInstanceTest::addNumericParameter( const std::string& name, const strus::NumericVariant& value )
 {
 	if( boost::algorithm::iequals( name, "N" ) ) {
-		m_N = value.toint( );
+		m_N = (int)value.toint( );
 	} else if( boost::algorithm::iequals( name, "nof_sentences" ) ) {
-		m_nofSentences = value.toint( );
+		m_nofSentences = (int)value.toint( );
 	} else if( boost::algorithm::iequals( name, "start_first_match" ) ) {
 		m_start_first_match = ( value.touint( ) > 0 );
 	} else if( boost::algorithm::iequals( name, "add_dots" ) ) {

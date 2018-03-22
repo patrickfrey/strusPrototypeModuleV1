@@ -170,7 +170,7 @@ void SummarizerFunctionInstanceTest2::addNumericParameter( const std::string& na
 		m_errorhnd->report( strus::ErrorCodeInvalidArgument,
 					_TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test2" );
 	} else if( boost::algorithm::iequals( name, "N" ) ) {
-		m_N = value.toint( );
+		m_N = (int)value.toint( );
 	} else {
 		m_errorhnd->report( strus::ErrorCodeNotImplemented,
 					_TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test2", name.c_str( ) );
