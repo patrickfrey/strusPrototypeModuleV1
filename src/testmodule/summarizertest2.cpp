@@ -46,7 +46,7 @@ void SummarizerFunctionContextTest2::addSummarizationFeature( const std::string 
 		if( boost::algorithm::iequals( name, "match" ) ) {
 			m_itrs.push_back( itr );
 		} else {
-			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+			m_errorhnd->report( strus::ErrorCodeNotImplemented,
 						_TXT( "unknown '%s' summarization feature '%s'" ), "test", name.c_str( ) );
 		}
 	}
@@ -151,13 +151,13 @@ void SummarizerFunctionInstanceTest2::addStringParameter( const std::string& nam
 {
 	try {
 		if( boost::algorithm::iequals( name, "match" ) ) {
-			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseInvalidArgument),
+			m_errorhnd->report( strus::ErrorCodeInvalidArgument,
 						_TXT( "parameter '%s' for summarization function '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
 		}
 		if( boost::algorithm::iequals( name, "type" ) ) {
 			m_type = value;
 		} else {
-			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+			m_errorhnd->report( strus::ErrorCodeNotImplemented,
 						_TXT( "unknown '%s' string summarization function parameter '%s'" ), "test2", name.c_str( ) );
 		}
 	}
@@ -167,12 +167,12 @@ void SummarizerFunctionInstanceTest2::addStringParameter( const std::string& nam
 void SummarizerFunctionInstanceTest2::addNumericParameter( const std::string& name, const strus::NumericVariant& value )
 {
 	if( boost::algorithm::iequals( name, "type" ) ) {		
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseInvalidArgument),
+		m_errorhnd->report( strus::ErrorCodeInvalidArgument,
 					_TXT( "no numeric value expected for parameter '%s' in summarization function '%s'"), name.c_str( ), "test2" );
 	} else if( boost::algorithm::iequals( name, "N" ) ) {
 		m_N = value.toint( );
 	} else {
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+		m_errorhnd->report( strus::ErrorCodeNotImplemented,
 					_TXT( "unknown '%s' numeric summarization function parameter '%s'" ), "test2", name.c_str( ) );
 	}
 }

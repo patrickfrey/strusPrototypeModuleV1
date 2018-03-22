@@ -70,19 +70,19 @@ strus::PostingIteratorInterface *PostingJoinOperatorTest::createResultIterator(
 			unsigned int cardinality ) const
 {
 	if( range <= 0 || (unsigned int)range < itrs.size( ) ) {
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseValueOutOfRange),
+		m_errorhnd->report( strus::ErrorCodeValueOutOfRange,
 					_TXT( "range of 'test' is out of range" ) );
 		return 0;
 	}
 	
 	if( cardinality > itrs.size( ) ) {
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseValueOutOfRange),
+		m_errorhnd->report( strus::ErrorCodeValueOutOfRange,
 					_TXT( "ardinality of'test' is out of range" ) );
 		return 0;
 	}
 	
 	if( itrs.size( ) == 0 ) {
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseIncompleteDefinition),
+		m_errorhnd->report( strus::ErrorCodeIncompleteDefinition,
 					_TXT( "too few arguments for 'test'" ) );
 		return 0;
 	}
