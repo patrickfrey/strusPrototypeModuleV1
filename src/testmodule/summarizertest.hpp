@@ -116,7 +116,7 @@ class SummarizerFunctionContextTest : public strus::SummarizerFunctionContextInt
 			const strus::TermStatistics &);
 
 		virtual void setVariableValue( const std::string& name, double value) {
-			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+			m_errorhnd->report( strus::ErrorCodeUnknownIdentifier,
 						_TXT("no variables known for function '%s'"), "match");
 		}
 		

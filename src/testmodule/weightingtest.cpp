@@ -36,7 +36,7 @@ void WeightingFunctionContextTest::addWeightingFeature( const std::string& name,
 
 void WeightingFunctionContextTest::setVariableValue( const std::string&, double)
 {
-	m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+	m_errorhnd->report( strus::ErrorCodeNotImplemented,
 				_TXT("no variables known for function '%s'"), "test");
 }
 
@@ -66,11 +66,11 @@ void WeightingFunctionInstanceTest::addStringParameter( const std::string& name,
 {
 	try {
 		if( boost::algorithm::iequals( name, "match" ) ) {
-			m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseInvalidArgument),
+			m_errorhnd->report( strus::ErrorCodeInvalidArgument,
 						_TXT( "parameter '%s' for weighting function '%s' expected to be defined as feature and not as string or numeric value" ), name.c_str( ), "test" );
 		}
 		// we have no string parameters
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+		m_errorhnd->report( strus::ErrorCodeNotImplemented,
 					_TXT("unknown '%s' string weighting function parameter '%s'"), "test", name.c_str( ) );
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT( "error adding string parameter to '%s' weighting: %s"), "test", *m_errorhnd );
@@ -81,7 +81,7 @@ void WeightingFunctionInstanceTest::addNumericParameter( const std::string& name
 	if( boost::algorithm::iequals( name, "param" ) ) {
 		m_param = (double)value;
 	} else {
-		m_errorhnd->report( *strus::ErrorCode( strus::StrusComponentCore, strus::ErrorOperationBuildData, strus::ErrorCauseNotImplemented),
+		m_errorhnd->report( strus::ErrorCodeNotImplemented,
 					_TXT( "unknown '%s' numeric weighting function parameter '%s'" ), "test", name.c_str( ) );
 	}
 }
